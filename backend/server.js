@@ -26,8 +26,10 @@ app.get('/', (req, res) => {
 
 app.post('/subscribe', async (req, res) => {
     const { email } = req.body;
+    console.log(`Received email: ${email}`); // Log the received email
     const newEmail = new Email({ email });
     await newEmail.save();
+    console.log(`Email saved: ${email}`); // Log the saved email
     res.status(201).send('Email subscribed successfully');
 });
 
