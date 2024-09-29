@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,7 +13,10 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/nanogrowtech');
+const mongoURI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@nanogrowtech.f2yfi.mongodb.net/?retryWrites=true&w=majority&appName=nanogrowtech`;
+mongoose.connect(mongoURI, {
+    connectTimeoutMS: 30000, // Increase connection timeout to 30 seconds
+});
 
 const emailSchema = new mongoose.Schema({
     email: { type: String, required: true },
