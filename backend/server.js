@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
+app.use(bodyParser.urlencoded({ extended: true })); // Add this line to parse URL-encoded bodies
 app.use(bodyParser.json());
 app.use(cors());
 
