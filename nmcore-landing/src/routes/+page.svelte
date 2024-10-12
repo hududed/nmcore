@@ -6,8 +6,8 @@
     <div class="logo">
         <img src="/favicon.png" alt="NanoGrowTech Logo">
     </div>
-    <h1>nmCORE - Coming Soon</h1>
-    <p>We at nmCORE are working hard to bring you advanced biotechnology products that increase plant growth and harvesting yield. Stay tuned!</p>
+    <h1>nmCORE - Unlock More Yield with Revolutionary Nano Fertilizer</h1>
+    <p>Finally, a breakthrough solution that enhances photosynthesis, cuts fertilizer usage by 25%, and transforms your farm’s productivity. Stay tuned!</p>
     <NotifyForm />
 </div>
 
