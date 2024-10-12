@@ -26,3 +26,5 @@ yarn-error.log*
 
 # MacOS specific files
 .DS_Store
+
+scraper
