@@ -11,7 +11,10 @@ const config = {
             assets: 'build',
             fallback: 'index.html',
 			strict: true
-        })
+        }),
+        alias: {
+            "@/*": "./path/to/lib/*",
+          },
     }
 };
 
