@@ -1,7 +1,11 @@
-<script lang="ts">
+<script>
     import "../app.css";
+    import { Toaster } from 'svelte-sonner';
 </script>
 
-<div class="min-h-screen flex flex-col">
-    <slot />
-</div>
+<slot />
+<Toaster />
+<!-- <div class="min-h-screen flex flex-col"> -->
+    <!-- <slot></slot> -->
+    <!-- <Toaster /> -->
+<!-- </div> -->
