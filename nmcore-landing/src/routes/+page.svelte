@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { PageData } from "./$types.js";
     import NotifyForm from "./NotifyForm.svelte";
-    export let data: PageData;
   </script>
    
 
@@ -12,5 +11,5 @@
     <h1 class="text-4xl mb-5 font-bold">NMcore</h1>
     <h1 class="text-4xl mb-5">Maximize Your Crop Growth with Nano Technology</h1>
     <p class="text-lg mb-8">Finally, a breakthrough solution that enhances photosynthesis, cuts fertilizer usage by 25%, and transforms your farm’s productivity. Stay tuned!</p>
-    <NotifyForm data={data.form} />
+    <NotifyForm />
 </div>
