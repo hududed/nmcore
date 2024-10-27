@@ -1,6 +1,6 @@
 <script>
     import "../app.css";
-    import { Toaster } from 'svelte-sonner';
+    import { Toaster } from "$lib/components/ui/sonner";
 </script>
 
 <slot />

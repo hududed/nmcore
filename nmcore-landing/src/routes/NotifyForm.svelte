@@ -2,8 +2,8 @@
   import { Input } from "$lib/components/ui/input";
   import { Button } from "$lib/components/ui/button"; // Import the shadcn button component
   import { toast } from "svelte-sonner";
-  import { db } from '$lib/firebase';
-  import { collection, writeBatch, doc } from 'firebase/firestore';
+  import { collection, doc, writeBatch } from "firebase/firestore";
+  import { db } from "$lib/firebase";
 
   let firstName = '';
   let lastName = '';
