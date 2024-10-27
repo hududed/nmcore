@@ -16,7 +16,7 @@
         </p>
       </div>
       <div class="image-column flex-1 flex justify-center items-center pl-4 md:pl-8"> <!-- Added padding-left -->
-        <img src="/images/product.jpg" alt="About BLOOM" class="max-w-full sm:max-w-xs md:max-w-xs lg:max-w-xs"> <!-- Adjusted max-width for different breakpoints -->
+        <img src="/images/product.jpg" alt="About BLOOM" class="max-w-xs sm:max-w-1/2 md:max-w-xs lg:max-w-xs"> <!-- Adjusted max-width for different breakpoints -->
       </div>
     </div>
   </div>
@@ -26,4 +26,6 @@
 </div>
 
 <!-- Render the FAQ component -->
+<div class="faq-section mt-32">
 <Faq />
+</div>
