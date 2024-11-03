@@ -3,10 +3,10 @@
 </script>
 
 
-<div class="container mx-auto flex flex-col gap-8 py-8 px-4 md:px-8 max-w-screen-xl">
+<div class="container mx-auto flex flex-col gap-4 py-4 px-4 md:px-8 max-w-screen-xl">
     <div class="grow px-4">
         <div class="w-full flex flex-col pt-4 px-2">
-            <h3 class="text-center font-jura text-5xl pb-8">
+            <h3 class="text-center font-jura text-4xl sm:text-5xl  pb-8">
                 nmcore <span class="font-din2014-bold">BLOOM</span> FAQs
               </h3>
         </div>
@@ -18,7 +18,7 @@
                 <Accordion.Root class="w-full">
                     <Accordion.Item value="q-1">
                         <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            Can BLOOM be used in combination with other pesticides, fertilizers, & plant supplements?
+                            Can BLOOM be used with other crop inputs?
                         </Accordion.Trigger>
                         <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
                             Yes, BLOOM can be mixed with any pesticides, fertilizers, and plant supplements because it is inert and does not react with other elements.
@@ -49,7 +49,7 @@
                     </Accordion.Item>
                     <Accordion.Item value="q-5">
                         <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            When will the visual representation of BLOOM's effectiveness be noticeable?
+                            When will BLOOM's effectiveness be noticeable?
                         </Accordion.Trigger>
                         <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
                             Within 2-3 weeks.
@@ -85,7 +85,7 @@
                     </Accordion.Item>
                     <Accordion.Item value="q-9">
                         <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            What are the potential consequences of overusing BLOOM during a single spraying session?
+                            Can BLOOM be overused during a single spraying session?
                         </Accordion.Trigger>
                         <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
                             The plants may be stressed if too much of BLOOM is used. It may cause photo-inhibition and deter the plants from photosynthesizing optimally.
