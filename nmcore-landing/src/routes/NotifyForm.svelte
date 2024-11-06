@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Input } from "$lib/components/ui/input";
-  import { Button } from "$lib/components/ui/button"; // Import the shadcn button component
+  import { Button } from "$lib/components/ui/button"; 
   import { toast } from "svelte-sonner";
   import { collection, doc, writeBatch } from "firebase/firestore";
   import { db } from "$lib/firebase";
@@ -21,14 +21,27 @@
       batch.set(userRef, { fullName, email, number });
       await batch.commit();
       toast.success('User information saved successfully');
+
+      const response = await fetch('https://us-central1-nanogrowtech-609bc.cloudfunctions.net/sendEmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, fullName }),
+      });
+
+
+
       fullName = '';
       email = '';
       number = '';
+
     } catch (e) {
       console.error('Error adding document: ', e);
       toast.error('Error adding document');
     }
   };
+
 </script>
 
 <form on:submit={handleSubmit} class="space-y-4 max-w-lg mx-auto">
