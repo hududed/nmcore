@@ -4,7 +4,7 @@
     import { Toaster } from "$lib/components/ui/sonner";
 </script>
 
-<main class="card w-full bg-neutral text-neutral-content mx-auto">
+<main class="card w-full bg-neutral text-neutral-content mx-auto overflow-x-hidden">
     <div class="card-body items-center text-center">
       <slot/>
       <Toaster />

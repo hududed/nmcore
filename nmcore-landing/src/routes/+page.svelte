@@ -4,28 +4,38 @@
   import NotifyForm from "./NotifyForm.svelte";
   import Solution from './Solution.svelte';
   import Introduction from './Introduction.svelte';
+  import Footer from './Footer.svelte';
+  import Navbar from './Navbar.svelte';
 </script>
+
+
+<Navbar />
 
 <div class="introduction-section mt-16">
   <Introduction />
 </div>
 
-<div class="benefits-section mt-32">
+<div class="benefits-section mt-0">
   <Benefits />
 </div>
 
-<div class="solution-section mt-32">
+<div class="solution-section mt-0">
   <Solution />
 </div>
 
-<div class="faq-section mt-32">
+<div class="faq-section mt-0">
   <Faq />
 </div>
 
-<div class="card #172554 shadow-xl text-center mt-32 p-4">
+<div class="card #172554 text-center mt-32 p-4">
   <h2 class="text-2xl md:text-3xl mb-4">Join Our Testing/Validation Phase</h2>
   <p class="text-lg md:text-xl mb-8">
     We invite you to participate in our testing/validation phase. Please provide your contact information below to get started.
   </p>
   <NotifyForm />
+</div>
+
+
+<div class="faq-section mt-32">
+  <Footer />
 </div>

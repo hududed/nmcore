@@ -2,18 +2,18 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 </script>
 
-
-<div class="container mx-auto flex flex-col gap-4 py-4 px-4 md:px-8 max-w-screen-xl">
+<div class="w-full bg-zinc-100 py-12 md:py-24 lg:py-48 px-4 md:px-8">
+<div class="container mx-auto flex flex-col gap-4 px-4 md:px-8 max-w-screen-xl">
     <div class="grow px-4">
         <div class="w-full flex flex-col pt-4 px-2">
-            <h3 class="text-center font-jura text-4xl sm:text-5xl  pb-8">
-                nmcore <span class="font-din2014-bold">BLOOM</span> FAQs
+            <h3 class="text-left font-jura text-4xl sm:text-5xl  pb-8">
+                <span class="font-din2014-bold">BLOOM</span> FAQs
               </h3>
         </div>
 
 
         
-        <div class="flex flex-col md:flex-row">
+        <div class="flex flex-col md:flex-row px-2">
             <div class="w-full md:w-1/2 pr-2">
                 <Accordion.Root class="w-full">
                     <Accordion.Item value="q-1">
@@ -57,7 +57,7 @@
                     </Accordion.Item>
                 </Accordion.Root>
             </div>
-            <div class="w-full md:w-1/2 pl-2">
+            <div class="w-full md:w-1/2 pr-2">
                 <Accordion.Root class="w-full">
                     <Accordion.Item value="q-6">
                         <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
@@ -104,4 +104,4 @@
         </div>
     </div>
 </div>
-
+</div>

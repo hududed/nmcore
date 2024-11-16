@@ -4,11 +4,9 @@
 </script>
 
 <div class="container mx-auto flex flex-col gap-8 py-8 px-4 md:px-8 max-w-screen-xl">
-  <div class="w-full flex flex-col pt-4 px-2">
-    <h1 class="text-center font-jura text-4xl sm:text-5xl pb-8">
-      nmcore <span class="font-din2014-bold">BLOOM</span>
-    </h1>
-  </div>
+  <!-- <div class="w-full flex flex-col pt-4 px-2">
+    <img src="/images/nmcore_logo.jpg" alt="NMCore BLOOM Logo" class="mx-auto pb-8 max-w-xs" />
+  </div> -->
   <div class="columns flex flex-col md:flex-row gap-0"> <!-- Adjusted gap to 0 -->
     <div class="text-column flex-2/3 text-left text-xl sm:text-xl md:text-2xl leading-relaxed pr-4 md:pr-4 select-none"> <!-- Increased text size at sm breakpoint and added select-none -->
       <p>
@@ -24,7 +22,7 @@
             <Table.Cell>0 - 0 - 0</Table.Cell>
           </Table.Row>
           <Table.Row>
-            <Table.Head>Composition</Table.Head>
+            <Table.Head>Ingredients</Table.Head>
             <Table.Cell>Carbon, Silica, Water</Table.Cell>
           </Table.Row>
           <Table.Row>
@@ -61,9 +59,9 @@
     <div class="image-column flex-1/3 flex flex-col justify-center items-center pl-4 md:pl-8"> <!-- Added padding-left and flex-col -->
       <img src="/images/BLOOM_product.jpg" alt="About BLOOM" class="max-w-xs pointer-events-none select-none" draggable="false"> <!-- Added pointer-events-none and select-none to prevent copying -->
       <div class="mt-8 flex flex-col items-center gap-4 w-full"> <!-- Stacked buttons and centered them -->
-        <Button href="/products/bloom/sell_sheet" variant="default" class="text-lg w-full max-w-xs">Sell Sheet</Button>
-        <Button href="/products/bloom/label" variant="default" class="text-lg w-full max-w-xs">General Label</Button>
-        <Button href="/products/bloom/sds" variant="default" class="text-lg w-full max-w-xs">General SDS</Button>
+        <Button href="/products/bloom/sell_sheet" variant="default" class="text-lg w-full max-w-xs bg-zinc-700 text-white">Sell Sheet</Button>
+        <Button href="/products/bloom/label" variant="default" class="text-lg w-full max-w-xs bg-zinc-700 text-white">General Label</Button>
+        <Button href="/products/bloom/sds" variant="default" class="text-lg w-full max-w-xs bg-zinc-700 text-white">General SDS</Button>
       </div>
     </div>
   </div>
