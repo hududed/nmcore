@@ -2,7 +2,6 @@
   </script>
 
 
-<!-- Footer -->
 <div class="bg-zinc-800 text-white p-4 py-8 lg:py-16 w-full">
   <div class="flex justify-between items-center max-w-screen-xl mx-auto">
     <div>

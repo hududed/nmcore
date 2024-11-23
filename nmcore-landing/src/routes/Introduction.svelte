@@ -4,9 +4,6 @@
 </script>
 
 <div class="container mx-auto flex flex-col gap-8 py-8 px-4 md:px-8 max-w-screen-xl">
-  <!-- <div class="w-full flex flex-col pt-4 px-2">
-    <img src="/images/nmcore_logo.jpg" alt="NMCore BLOOM Logo" class="mx-auto pb-8 max-w-xs" />
-  </div> -->
   <div class="columns flex flex-col md:flex-row gap-0"> <!-- Adjusted gap to 0 -->
     <div class="text-column flex-2/3 text-left text-xl sm:text-xl md:text-2xl leading-relaxed pr-4 md:pr-4 select-none"> <!-- Increased text size at sm breakpoint and added select-none -->
       <p>
@@ -14,7 +11,6 @@
         <br><br>
         This results in up to 3X increase in photosynthetic efficiency.
       </p>
-      <!-- Added ShadCN table below the body text -->
       <Table.Root class="mt-8 w-full text-base sm:text-xl md:text-2xl">
         <Table.Header>
           <Table.Row>

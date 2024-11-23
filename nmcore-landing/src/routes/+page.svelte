@@ -1,12 +1,49 @@
 <script lang="ts">
-  import Benefits from './Benefits.svelte';
-  import Faq from './Faq.svelte';
-  import NotifyForm from "./NotifyForm.svelte";
-  import Solution from './Solution.svelte';
-  import Introduction from './Introduction.svelte';
-  import Footer from './Footer.svelte';
   import Navbar from './Navbar.svelte';
+  import Introduction from './Introduction.svelte';
+  import Benefits from './Benefits.svelte';
+  import Solution from './Solution.svelte';
+  import Faq from './Faq.svelte';
+  // import NotifyForm from "./NotifyForm.svelte";
+  import Footer from './Footer.svelte';
+  import { onMount } from 'svelte';
+
+  let NotifyForm: typeof import('./NotifyForm.svelte').default;
+
+  onMount(async () => {
+    const module = await import('./NotifyForm.svelte');
+    NotifyForm = module.default;
+  });
 </script>
+
+<svelte:head>
+  <title>NMCore</title>
+  <meta name="description" content="Our advanced carbon quantum dot technology is designed to help plants make better use of light across the UV, visible (VIS), and infrared (IR) spectrum. These tiny particles move easily through leaves and roots, reaching key areas in the plant, like the chloroplasts where photosynthesis happens. By doing so, they boost the plant's natural growth processes and energy production. Though this nanotechnology is new to agriculture, it's already widely used in many fields, from science and electronics to medicine, showing great promise for improving crop health and yield.">
+  <meta name="keywords" content="carbon quantum dot technology, photosynthesis, UV light, visible light, infrared light, plant growth, nanotechnology, agriculture, crop health, yield improvement">
+  <link rel="canonical" href="https://www.nmcore.com/" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "NMCore",
+      "description": "Our advanced carbon quantum dot technology is designed to help plants make better use of light across the UV, visible (VIS), and infrared (IR) spectrum...",
+      "author": {
+        "@type": "Organization",
+        "name": "NMCORE, LLC"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "NMCORE, LLC",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.nmcore.com/images/nmcore_logo.jpg"
+        }
+      },
+      "datePublished": "2023-10-01",
+      "image": "https://www.nmcore.com/images/BLOOM_product.jpg"
+    }
+  </script>
+</svelte:head>
 
 
 <Navbar />
@@ -32,7 +69,10 @@
   <p class="text-lg md:text-xl mb-8">
     We invite you to participate in our testing/validation phase. Please provide your contact information below to get started.
   </p>
-  <NotifyForm />
+  {#if NotifyForm}
+    <svelte:component this={NotifyForm} />
+  {/if}
+  <!-- <NotifyForm /> -->
 </div>
 
 

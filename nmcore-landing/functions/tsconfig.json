@@ -8,10 +8,12 @@
     "strict": true,
     "strictNullChecks": false, // <-- add this line
     "target": "es2017",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "jsx": "react",
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src",
+    "src/types"
   ]
 }

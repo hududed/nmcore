@@ -39,7 +39,7 @@
               </div>
             </Card.Content>
           </div>
-          <div class="flex-2/3 flex justify-center items-center max-w-full p-4">
+          <div class="flex-2/3 flex justify-center items-center max-w-full p-4 ">
             <img src="/images/BLOOM_thylakloid.jpg" alt="effects" class="w-full max-w-3xl pointer-events-none select-none" draggable="false">
           </div>
         </Card.Root>
@@ -58,7 +58,7 @@
             </div>
           </div>
         </div>
-        <div class="flex-2/3 flex justify-center items-center max-w-full p-4">
+        <div class="flex-2/3 flex justify-center items-center max-w-full py-0 md:py-4 px-0 md:px-4">
           <img src="/images/BLOOM_particle.jpg" alt="particle" class="w-full max-w-3xl pointer-events-none select-none" draggable="false">
         </div>
       </div>
@@ -73,7 +73,7 @@
             </div>
           </div>
         </div>
-        <div class="flex-2/3 flex justify-center items-center max-w-full p-4">
+        <div class="flex-2/3 flex justify-center items-center max-w-full py-0 md:py-4 px-0 md:px-4">
           <img src="/images/BLOOM_thylakloid.jpg" alt="effects" class="w-full max-w-3xl pointer-events-none select-none" draggable="false">
         </div>
       </div>
