@@ -9,6 +9,10 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"moduleResolution": "bundler"
+		"strictNullChecks": false,
+		"moduleResolution": "bundler",
+        "jsx": "react", // Add this line to support JSX
+        "jsxFactory": "React.createElement", // Add this line to specify the JSX factory
+        "jsxFragmentFactory": "React.Fragment" // Add this line to specify the JSX fragment factory
 	}
 }

@@ -8,7 +8,7 @@
   import Footer from './Footer.svelte';
   import { onMount } from 'svelte';
 
-  let NotifyForm: typeof import('./NotifyForm.svelte').default;
+  let NotifyForm: typeof import('./NotifyForm.svelte').default = $state();
 
   onMount(async () => {
     const module = await import('./NotifyForm.svelte');
@@ -70,7 +70,7 @@
     We invite you to participate in our testing/validation phase. Please provide your contact information below to get started.
   </p>
   {#if NotifyForm}
-    <svelte:component this={NotifyForm} />
+    <NotifyForm />
   {/if}
   <!-- <NotifyForm /> -->
 </div>

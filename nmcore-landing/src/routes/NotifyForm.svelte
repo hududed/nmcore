@@ -5,9 +5,9 @@
   import { collection, doc, writeBatch } from "firebase/firestore";
   import { db } from "$lib/firebase";
 
-  let fullName = '';
-  let email = '';
-  let number = '';
+  let fullName = $state('');
+  let email = $state('');
+  let number = $state('');
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault();
@@ -44,7 +44,7 @@
 
 </script>
 
-<form on:submit={handleSubmit} class="space-y-4 max-w-lg mx-auto">
+<form onsubmit={handleSubmit} class="space-y-4 max-w-lg mx-auto">
   <div>
     <Input id="fullName" type="text" bind:value={fullName} placeholder="Full Name" required />
   </div>
