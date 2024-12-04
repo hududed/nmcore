@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button/index.js";
+  import * as Sheet from "$lib/components/ui/sheet/index.js";
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
@@ -78,8 +79,19 @@
           <Button class="size-button" onclick={() => selectSize('Refill')}>Refill</Button>
         </div>
 
-        <Button class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2">ADD TO CART</Button>
-        <Button class="w-full bg-purple-500 text-white py-2 px-4 rounded">Buy with Shop Pay</Button>
+        <Sheet.Root>
+          <Sheet.Trigger>
+            <Button class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2">ADD TO CART</Button>
+          </Sheet.Trigger>
+          <Sheet.Content>
+            <Sheet.Header>
+              <Sheet.Title>Item Added to Cart</Sheet.Title>
+              <Sheet.Description>
+                You have successfully added the Photosynthesis Enhancer to your cart.
+              </Sheet.Description>
+            </Sheet.Header>
+          </Sheet.Content>
+        </Sheet.Root>
       </div>
     </div>
   </div>
