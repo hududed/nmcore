@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from "$lib/components/ui/button/index.js";
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
@@ -46,36 +47,11 @@
     justify-content: center;
     flex-wrap: wrap;
   }
-  .product-container {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .product-images {
-    flex: 1;
-    max-width: 50%;
-  }
-  .product-details {
-    flex: 1;
-    max-width: 50%;
-    padding: 20px;
-  }
-  .size-button {
-    margin: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  .add-to-cart-button, .shop-pay-button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
 </style>
 
 <main class="container mx-auto py-8">
-  <div class="product-container">
-    <div class="product-images">
+  <div class="flex flex-wrap">
+    <div class="w-full md:w-1/2">
       <div class="text-center">
         <img src={largePhoto} alt="Large Product Photo" class="large-photo" onerror={() => console.error('Error loading large photo:', largePhoto)} />
       </div>
@@ -89,18 +65,22 @@
       </div>
     </div>
 
-    <div class="product-details">
-      <h1>Photosynthesis Enhancer</h1>
-      <p>${price.toFixed(2)}</p>
-      <p>User rating: 5-star (100 ratings)</p>
-      <a href="#ratings">See all ratings</a>
+    <div class="w-full md:w-1/2 p-4">
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-2">Photosynthesis Enhancer</h1>
+        <p class="text-xl text-gray-700 mb-4">${price.toFixed(2)}</p>
+        <p class="text-gray-600 mb-2">User rating: 5-star (100 ratings)</p>
+        <a href="#ratings" class="text-blue-500 underline mb-4 block">See all ratings</a>
 
-      <h2>SIZE</h2>
-      <button class="size-button" onclick={() => selectSize('Spray')}>Spray</button>
-      <button class="size-button" onclick={() => selectSize('Refill')}>Refill</button>
+        <h2 class="text-lg font-semibold mb-2">SIZE</h2>
+        <div class="flex justify-center space-x-2 mb-4">
+          <Button class="size-button" onclick={() => selectSize('Spray')}>Spray</Button>
+          <Button class="size-button" onclick={() => selectSize('Refill')}>Refill</Button>
+        </div>
 
-      <button class="add-to-cart-button">ADD TO CART</button>
-      <button class="shop-pay-button">Buy with Shop Pay</button>
+        <Button class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2">ADD TO CART</Button>
+        <Button class="w-full bg-purple-500 text-white py-2 px-4 rounded">Buy with Shop Pay</Button>
+      </div>
     </div>
   </div>
 </main>
