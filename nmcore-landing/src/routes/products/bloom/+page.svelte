@@ -100,10 +100,6 @@
     width: 30px;
     text-align: center;
   }
-  .sheet-content {
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-  }
   .sheet-footer {
     position: sticky;
     bottom: 0;
@@ -123,6 +119,19 @@
     margin-top: 10px;
     width: 100%;
     text-align: center;
+  }
+  @media (max-width: 500px) {
+    .flex.items-center {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .ml-4 {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+    .quantity-chooser {
+      margin-top: 10px;
+    }
   }
 </style>
 
@@ -157,11 +166,11 @@
 
         <Sheet.Root>
           <Sheet.Trigger class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2" onclick={addToCart}>ADD TO CART</Sheet.Trigger>
-          <Sheet.Content>
+          <Sheet.Content style="width: 60vw; max-width: 512px; max-height: calc(100vh - 100px); overflow-y: auto;">
             <Sheet.Header>
               <Sheet.Title>Shopping Cart</Sheet.Title>
             </Sheet.Header>
-            <Sheet.Description class="sheet-content">
+            <Sheet.Description>
               {#each cartItems as item, index}
                 <div class="flex items-center mb-4">
                   <img src={item.photo} alt="Product Thumbnail" class="thumbnail" />
