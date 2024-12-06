@@ -2,6 +2,8 @@
   import { goto } from '$app/navigation';
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Sheet from "$lib/components/ui/sheet/index.js";
+  import type { CartProduct } from '$lib/types';
+  import ShoppingCart from 'phosphor-svelte/lib/ShoppingCart';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
@@ -15,8 +17,38 @@
   let price = $state<number>(9.99);
   let size = $state<string>('Spray');
   let quantity = $state<number>(1);
-  let cartItems = $state<{ name: string; size: string; price: number; quantity: number; photo: string }[]>([]);
-  let subtotal = $state<number>(0);
+
+  let cartOpen = $state(false);
+  let cartProducts = $state<CartProduct[]>([]);
+
+  const cartStats = $derived.by(() => {
+    let quantity = 0;
+    let total = 0;
+    for (const product of cartProducts) {
+      quantity += product.quantity;
+      total += product.product.price * product.quantity;
+    }
+    return {
+      quantity,
+      total
+    };
+  });
+
+  const qualifiesForFreeShipping = $derived(cartStats.total >= 50);
+
+  let freeShippingAlertCount = 0;
+
+  $effect(() => {
+    if (freeShippingAlertCount > 0) return;
+    if (qualifiesForFreeShipping) {
+      alert('You have qualified for free shipping!');
+      freeShippingAlertCount++;
+    }
+  });
+
+  function removeFromCart(id: string) {
+    cartProducts = cartProducts.filter((product) => product.id !== id);
+  }
 
   onMount(() => {
     largePhoto = photos[0]; // Set the initial large photo
@@ -34,36 +66,21 @@
     largePhoto = selectedSize === 'Refill' ? photos[1] : photos[0];
   }
 
-  function increaseQuantity(index: number): void {
-    cartItems[index].quantity += 1;
-    updateSubtotal();
-  }
-
-  function decreaseQuantity(index: number): void {
-    if (cartItems[index].quantity > 1) {
-      cartItems[index].quantity -= 1;
-    } else {
-      cartItems.splice(index, 1);
-    }
-    updateSubtotal();
-  }
-
-  function addToCart(): void {
-    cartItems.push({ name: 'Photosynthesis Enhancer', size, price, quantity, photo: photos[0] });
-    updateSubtotal();
-  }
-
-  function addRefillToCart(): void {
-    cartItems.push({ name: 'Photosynthesis Enhancer Refill', size: 'Refill', price: 19.99, quantity: 1, photo: photos[1] });
-    updateSubtotal();
-  }
-
-  function updateSubtotal(): void {
-    subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  }
-
   function goToCheckout(): void {
     goto('/checkouts');
+  }
+
+  function toggleCart() {
+    cartOpen = !cartOpen;
+  }
+
+  function addToCart(product) {
+    cartProducts.push({
+      id: crypto.randomUUID(),
+      quantity: 1,
+      product: product
+    });
+    cartOpen = true;
   }
 </script>
 
@@ -135,6 +152,19 @@
   }
 </style>
 
+<div class="flex items-center bg-gray-300 p-4">
+  <span class="text-lg font-bold">SvelteMart</span>
+  <div class="relative ml-auto flex items-center">
+    <button
+      onclick={toggleCart}
+      class="flex items-center rounded-full bg-sky-600 px-4 py-2 text-white hover:bg-sky-700"
+    >
+      <ShoppingCart class="mr-2 size-5" />
+      <span>Cart ({cartStats.quantity})</span>
+    </button>
+  </div>
+</div>
+
 <main class="container mx-auto py-8">
   <div class="flex flex-wrap">
     <div class="w-full md:w-1/2">
@@ -164,48 +194,101 @@
           <Button class="size-button" onclick={() => selectSize('Refill')}>Refill</Button>
         </div>
 
-        <Sheet.Root>
-          <Sheet.Trigger class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2" onclick={addToCart}>ADD TO CART</Sheet.Trigger>
-          <Sheet.Content style="width: 60vw; max-width: 512px; max-height: calc(100vh - 100px); overflow-y: auto;">
-            <Sheet.Header>
-              <Sheet.Title>Shopping Cart</Sheet.Title>
-            </Sheet.Header>
-            <Sheet.Description>
-              {#each cartItems as item, index}
-                <div class="flex items-center mb-4">
-                  <img src={item.photo} alt="Product Thumbnail" class="thumbnail" />
-                  <div class="ml-4">
-                    <p class="font-bold">{item.name}</p>
-                    <p>Size: {item.size}</p>
-                    <div class="quantity-chooser">
-                      <button class="quantity-button" onclick={() => decreaseQuantity(index)}>-</button>
-                      <span class="quantity-display">{item.quantity}</span>
-                      <button class="quantity-button" onclick={() => increaseQuantity(index)}>+</button>
-                    </div>
-                    <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
-                  </div>
-                </div>
-              {/each}
-              <div class="mt-4">
-                <p class="font-bold">DON'T FORGET TO REFILL</p>
-                <div class="flex items-center mt-2">
-                  <img src={photos[1]} alt="Refill Product Thumbnail" class="thumbnail" />
-                  <div class="ml-4">
-                    <p class="font-bold">Photosynthesis Enhancer Refill</p>
-                    <p>$19.99</p>
-                    <Button class="size-button" onclick={addRefillToCart}>ADD TO CART</Button>
-                  </div>
-                </div>
-              </div>
-            </Sheet.Description>
-            <div class="sheet-footer">
-              <span>Subtotal: ${subtotal.toFixed(2)}</span>
-              <p class="text-gray-600 text-sm">Shipping, taxes, and discount codes calculated at checkout.</p>
-              <button class="checkout-button" onclick={goToCheckout}>Checkout</button>
-            </div>
-          </Sheet.Content>
-        </Sheet.Root>
+        <Button class="w-full bg-blue-500 text-white py-2 px-4 rounded mb-2" onclick={() => addToCart({
+          id: 1,
+          title: 'Photosynthesis Enhancer',
+          description: '',
+          category: '',
+          price: price,
+          discountPercentage: 0,
+          rating: 5,
+          stock: 100,
+          tags: [],
+          brand: '',
+          sku: '',
+          weight: 0,
+          dimensions: { width: 0, height: 0, depth: 0 },
+          warrantyInformation: '',
+          shippingInformation: '',
+          availabilityStatus: '',
+          reviews: [],
+          returnPolicy: '',
+          minimumOrderQuantity: 1,
+          meta: { createdAt: '', updatedAt: '', barcode: '', qrCode: '' },
+          thumbnail: photos[0],
+          images: photos
+        })}>ADD TO CART</Button>
       </div>
     </div>
   </div>
 </main>
+
+<Sheet.Root open={cartOpen} onOpenChange={toggleCart}>
+  <Sheet.Content style="width: 60vw; max-width: 512px; max-height: calc(100vh - 100px); overflow-y: auto;">
+    <Sheet.Header>
+      <Sheet.Title>Shopping Cart</Sheet.Title>
+    </Sheet.Header>
+    <Sheet.Description>
+      {#each cartProducts as item, index}
+        <div class="flex items-center mb-4">
+          <img src={item.product.thumbnail} alt="Product Thumbnail" class="thumbnail" />
+          <div class="ml-4">
+            <p class="font-bold">{item.product.title}</p>
+            <p>Size: {size}</p>
+            <div class="quantity-chooser">
+              <button class="quantity-button" onclick={() => {
+                if (item.quantity === 1) {
+                  removeFromCart(item.id);
+                } else {
+                  item.quantity--;
+                }
+              }}>-</button>
+              <span class="quantity-display">{item.quantity}</span>
+              <button class="quantity-button" onclick={() => item.quantity++}>+</button>
+            </div>
+            <p>Total: ${(item.product.price * item.quantity).toFixed(2)}</p>
+          </div>
+        </div>
+      {/each}
+      <div class="mt-4">
+        <p class="font-bold">DON'T FORGET TO REFILL</p>
+        <div class="flex items-center mt-2">
+          <img src={photos[1]} alt="Refill Product Thumbnail" class="thumbnail" />
+          <div class="ml-4">
+            <p class="font-bold">Photosynthesis Enhancer Refill</p>
+            <p>$19.99</p>
+            <Button class="size-button" onclick={() => addToCart({
+              id: 2,
+              title: 'Photosynthesis Enhancer Refill',
+              description: '',
+              category: '',
+              price: 19.99,
+              discountPercentage: 0,
+              rating: 5,
+              stock: 100,
+              tags: [],
+              brand: '',
+              sku: '',
+              weight: 0,
+              dimensions: { width: 0, height: 0, depth: 0 },
+              warrantyInformation: '',
+              shippingInformation: '',
+              availabilityStatus: '',
+              reviews: [],
+              returnPolicy: '',
+              minimumOrderQuantity: 1,
+              meta: { createdAt: '', updatedAt: '', barcode: '', qrCode: '' },
+              thumbnail: photos[1],
+              images: photos
+            })}>ADD TO CART</Button>
+          </div>
+        </div>
+      </div>
+    </Sheet.Description>
+    <div class="sheet-footer">
+      <span>Subtotal: ${cartStats.total.toFixed(2)}</span>
+      <p class="text-gray-600 text-sm">Shipping, taxes, and discount codes calculated at checkout.</p>
+      <button class="checkout-button" onclick={goToCheckout}>Checkout</button>
+    </div>
+  </Sheet.Content>
+</Sheet.Root>
