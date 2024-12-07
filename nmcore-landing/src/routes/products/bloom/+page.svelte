@@ -24,7 +24,7 @@
   });
 </script>
 
-<main class="container mx-auto py-8">
+<main class="container py-8 mt-24 md:mt-32">
   <div class="flex flex-wrap">
     <div class="w-full md:w-1/2">
       <div class="text-center static-photo hidden md:block">

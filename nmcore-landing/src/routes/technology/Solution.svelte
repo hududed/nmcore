@@ -3,7 +3,7 @@
   import * as Tabs from "$lib/components/ui/tabs";
 </script>
 
-<div class="container mx-auto flex flex-col items-center justify-center gap-4 py-12 md:py-24 lg:py-48 px-4 md:px-8 max-w-screen-xl"> <!-- Centered content and set min height -->
+<div class="mx-auto flex flex-col items-center justify-center gap-4 py-12 md:py-24 lg:py-48 px-4 md:px-8 max-w-screen-xl"> <!-- Centered content and set min height -->
   <div class="w-full flex flex-col pt-4 px-2">
     <h3 class="text-left font-jura text-4xl sm:text-5xl pb-8">
       Our solution

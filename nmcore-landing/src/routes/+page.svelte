@@ -1,20 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { Button } from "$lib/components/ui/button/index.js";
-  import { onMount } from 'svelte';
-  import Benefits from './Benefits.svelte';
-  import Faq from './Faq.svelte';
-  import Footer from './Footer.svelte';
-  import Introduction from './Introduction.svelte';
-  import Navbar from './Navbar.svelte';
-  import Solution from './Solution.svelte';
-
-  let NotifyForm: typeof import('./NotifyForm.svelte').default = $state();
-
-  onMount(async () => {
-    const module = await import('./NotifyForm.svelte');
-    NotifyForm = module.default;
-  });
 
   function shopNow() {
     goto('/products/bloom');
@@ -50,38 +36,12 @@
   </script>
 </svelte:head>
 
-<Navbar />
-
-<div class="shop-now-section mt-32 text-center">
-  <Button class="bg-blue-500 text-white py-2 px-4 rounded" onclick={shopNow}>SHOP NOW</Button>
-</div>
-
-<div class="introduction-section mt-16">
-  <Introduction />
-</div>
-
-<div class="benefits-section mt-0">
-  <Benefits />
-</div>
-
-<div class="solution-section mt-0">
-  <Solution />
-</div>
-
-<div class="faq-section mt-0">
-  <Faq />
-</div>
-
-<div class="card #172554 text-center mt-32 p-4">
-  <h2 class="text-2xl md:text-3xl mb-4">Join Our Testing/Validation Phase</h2>
-  <p class="text-lg md:text-xl mb-8">
-    We invite you to participate in our testing/validation phase. Please provide your contact information below to get started.
-  </p>
-  {#if NotifyForm}
-    <NotifyForm />
-  {/if}
-</div>
-
-<div class="faq-section mt-32">
-  <Footer />
+<div class="banner-section bg-zinc-50 text-zinc-800 text-left py-16 px-4 md:px-8 mt-16">
+  <div class="container mx-auto flex flex-col gap-8 py-8 px-4 md:px-8 max-w-screen-xl">
+    <div class="text-column flex-2/3 text-left text-xl sm:text-xl md:text-2xl leading-relaxed pr-4 md:pr-4 select-none">
+      <h1 class="text-2xl md:text-3xl font-semibold mb-8 text-zinc-400">Midnight Bloom</h1>
+      <h2 class="text-3xl md:text-4xl font-semibold mb-8">GROW IN THE DARK</h2>
+      <Button class="bg-zinc-800 text-zinc-50 py-2 px-4 rounded" onclick={shopNow}>SHOP NOW</Button>
+    </div>
+  </div>
 </div>

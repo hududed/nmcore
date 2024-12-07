@@ -1,5 +1,6 @@
 <script lang="ts">
   import Cart from '$lib/components/Cart.svelte';
+  import Footer from '$lib/components/Footer.svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import { Toaster } from "$lib/components/ui/sonner";
   import { cartOpen } from '$lib/stores/cartStore';
@@ -20,13 +21,17 @@
   });
 </script>
 
-<Navbar />
+<div class="flex flex-col min-h-screen">
+  <Navbar />
 
-<main class="card w-full bg-neutral text-neutral-content mx-auto overflow-x-hidden">
-  <div class="card-body items-center text-center">
-    {@render children?.()}
-    <Toaster />
-  </div>
-</main>
+  <main class="flex-grow card w-full bg-neutral text-neutral-content mx-auto overflow-x-hidden">
+    <div class="card-body items-center text-center">
+      {@render children?.()}
+      <Toaster />
+    </div>
+  </main>
 
-<Cart {products} bind:open={$cartOpen} />
+  <Cart {products} bind:open={$cartOpen} />
+
+  <Footer />
+</div>
