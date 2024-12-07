@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "title": "Midnight Bloom",
+        "title": "BLOOM",
         "description": "Midnight Bloom is an organic advanced nanotechnology foliar spray that helps plants struggling in low-light environments.",
         "category": "gardening",
         "price": 9.99,
@@ -61,7 +61,7 @@
     },
     {
         "id": 2,
-        "title": "Midnight Bloom Refill",
+        "title": "BLOOM Refill",
         "description": "Midnight Bloom is an organic advanced nanotechnology foliar spray that helps plants struggling in low-light environments.",
         "category": "gardening",
         "price": 19.99,

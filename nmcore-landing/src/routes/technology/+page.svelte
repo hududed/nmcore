@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Faq from '$lib/components/Faq.svelte';
+  import Faq from '$lib/components/FaqCrop.svelte';
   import { onMount } from 'svelte';
   import Benefits from './Benefits.svelte';
   import Introduction from './Introduction.svelte';

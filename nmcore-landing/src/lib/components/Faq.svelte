@@ -1,107 +1,90 @@
 <script>
-	import * as Accordion from '$lib/components/ui/accordion';
+  import * as Accordion from '$lib/components/ui/accordion';
 </script>
 
-<div class="w-full bg-zinc-100 py-12 md:py-24 lg:py-48 px-4 md:px-8">
-<div class="container mx-auto flex flex-col gap-4 px-4 md:px-8 max-w-screen-xl">
-    <div class="grow px-4">
-        <div class="w-full flex flex-col pt-4 px-2">
-            <h3 class="text-left font-jura text-4xl sm:text-5xl  pb-8">
-                <span class="font-din2014-bold">BLOOM</span> FAQs
-              </h3>
-        </div>
-
-
-        
-        <div class="flex flex-col md:flex-row px-2">
-            <div class="w-full md:w-1/2 pr-2">
-                <Accordion.Root class="w-full">
-                    <Accordion.Item value="q-1">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            Can BLOOM be used with other crop inputs?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            Yes, BLOOM can be mixed with any pesticides, fertilizers, and plant supplements because it is inert and does not react with other elements.
-                            BLOOM does not contain other active ingredients.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-2">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            What is the difference between BLOOM & fertilizer?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            BLOOM is a photosynthesis enhancer that helps to boost the photosynthesis efficiency of plants. Unlike fertilizer, BLOOM does not have nutrient elements like N P K, nor other micronutrients.
-                            Plants still require fertilizer and BLOOM is not a replacement for fertilizer.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-3">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            What are the observable effects of BLOOM on plants?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg text-left">
-                            <ul class="list-disc pl-5">
-                                <li>Enhanced shine on leaves.</li>
-                                <li>Darker green coloration on leaves, particularly on leafy plants.</li>
-                                <li>Slightly larger leaves, especially on leafy plants.</li>
-                                <li>Sustained greenness maintained for up to 20 days post application.</li>
-                            </ul>
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-5">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            When will BLOOM's effectiveness be noticeable?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            Within 2-3 weeks.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                </Accordion.Root>
-            </div>
-            <div class="w-full md:w-1/2 pr-2">
-                <Accordion.Root class="w-full">
-                    <Accordion.Item value="q-6">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            What is the best time to spray BLOOM?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            The best time to spray BLOOM is typically during the early morning or late afternoon when temperatures are cooler and there’s less direct sunlight. This helps to minimize evaporation and allows for better absorption by the plants.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-7">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            Does BLOOM have an expiration date?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            It does not, but it is recommended to use within 3 years.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-8">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            How often should BLOOM be applied to plants?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            BLOOM can be applied to plants once a week depending on the plant’s specific needs and environmental conditions.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-9">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            Can BLOOM be overused during a single spraying session?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            The plants may be stressed if too much of BLOOM is used. It may cause photo-inhibition and deter the plants from photosynthesizing optimally.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                    <Accordion.Item value="q-10">
-                        <Accordion.Trigger class="md:text-2xl font-jura text-xl text-left">
-                            Is BLOOM safe for usage on organic certified crops?
-                        </Accordion.Trigger>
-                        <Accordion.Content class="font-light text-lg whitespace-pre-line text-left">
-                            Yes, BLOOM is safe for usage on organic-certified crops.
-                        </Accordion.Content>
-                    </Accordion.Item>
-                </Accordion.Root>
-            </div>
-        </div>
+<div class="w-full bg-white">
+  <div class="mx-auto flex flex-col">
+    <div class="grow">
+      <div class="flex flex-col">
+        <Accordion.Root class="w-full">
+          <Accordion.Item value="q-1">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              What is BLOOM?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              BLOOM is a revolutionary photosynthesis enhancer that helps your plants thrive, especially in low-light conditions. Think of it as a personal trainer for your plant babies, boosting their photosynthesis game up to 3X!
+              Made with cutting-edge nanotechnology, BLOOM mimics chlorophyll, blending naturally into your plants’ chloroplasts to optimize their energy production.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-2">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              What do you use BLOOM for?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              BLOOM is perfect for giving struggling plants the energy boost they need. Whether your fiddle leaf fig is pouting in a dim corner or your pothos is slacking on the trailing, BLOOM has their back.
+              Spray it on the leaves, and watch them perk up like they’ve just had their morning coffee. BLOOM helps them absorb more light, so even those shadowy spots become a green haven.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-3">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              How does BLOOM work?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              BLOOM is packed with a biocompatible organic compound that supercharges the natural process of photosynthesis. It enhances photon absorption and electron transfer—basically turning your plant into a low-light superstar.
+              Picture this: your plants are running on battery mode. BLOOM is the fast charger that keeps them powered up and glowing.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-4">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              When is BLOOM most effective?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              BLOOM shines (pun intended) in low-light or indoor spaces where sunlight can’t do all the heavy lifting. It’s your secret weapon for winter blues or shaded corners.
+              Consistency is key! Use BLOOM regularly to keep your plants energized and growing strong.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-5">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              How often should I use BLOOM?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              For happy, thriving plants, a spritz every 2–3 weeks is just right. For plants that need a little extra TLC, you can use it weekly until they’re back to their best selves.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-6">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              Can BLOOM harm your plants?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              Not at all! BLOOM is designed to be gentle and safe when used as directed. But, as with all things, moderation is key. Don’t overdo it—your plants like balance, too.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-7">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              Can BLOOM work in direct sunlight?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              BLOOM’s magic works best when applied in the evening or during low-light hours. This gives your plants time to soak up the good stuff without the risk of sunburn.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-8">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              Can I get BLOOM on my skin?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              BLOOM is completely safe to handle, but if you prefer to keep your hands clean, a pair of gloves will do the trick.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-9">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              Will BLOOM work on all plants?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              Most plants love BLOOM, but if you’re nervous about trying it on your green buddies, do a quick spot test first. Think of it like trying a new skincare product—better safe than sorry!
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      </div>
     </div>
-</div>
+  </div>
 </div>

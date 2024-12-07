@@ -26,7 +26,7 @@
 
 <main class="container py-8 mt-24 md:mt-32">
   <div class="flex flex-wrap">
-    <div class="w-full md:w-1/2">
+    <div class="w-full md:w-1/2 md:sticky md:top-24">
       <div class="text-center static-photo hidden md:block">
         {#if $largePhoto}
           <img src={$largePhoto} class="w-full max-h-96 mx-auto object-contain" alt={$selectedProduct.title} onerror={() => console.error('Error loading large photo:', $largePhoto)} />
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <div class="w-full md:w-1/2 p-4">
+    <div class="w-full md:w-1/2 p-4 md:overflow-y-auto md:max-h-screen">
       <ProductDetails {products} />
     </div>
   </div>
