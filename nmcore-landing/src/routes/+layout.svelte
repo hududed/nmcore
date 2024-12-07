@@ -1,17 +1,32 @@
-<!-- /src/routes/+layout.svelte -->
 <script lang="ts">
-    import "../app.css";
-    import { Toaster } from "$lib/components/ui/sonner";
-    interface Props {
-        children?: import('svelte').Snippet;
-    }
+  import Cart from '$lib/components/Cart.svelte';
+  import Navbar from '$lib/components/Navbar.svelte';
+  import { Toaster } from "$lib/components/ui/sonner";
+  import { cartOpen } from '$lib/stores/cartStore';
+  import type { Product } from '$lib/types';
+  import { onMount } from 'svelte';
+  import "../app.css";
 
-    let { children }: Props = $props();
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
+  let products = $state<Product[]>([]);
+
+  onMount(async () => {
+    const res = await fetch('/api/products');
+    products = await res.json();
+  });
 </script>
 
+<Navbar />
+
 <main class="card w-full bg-neutral text-neutral-content mx-auto overflow-x-hidden">
-    <div class="card-body items-center text-center">
-      {@render children?.()}
-      <Toaster />
-    </div>
+  <div class="card-body items-center text-center">
+    {@render children?.()}
+    <Toaster />
+  </div>
 </main>
+
+<Cart {products} bind:open={$cartOpen} />

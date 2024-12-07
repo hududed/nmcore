@@ -1,12 +1,13 @@
 <script lang="ts">
-  import Navbar from './Navbar.svelte';
-  import Introduction from './Introduction.svelte';
-  import Benefits from './Benefits.svelte';
-  import Solution from './Solution.svelte';
-  import Faq from './Faq.svelte';
-  // import NotifyForm from "./NotifyForm.svelte";
-  import Footer from './Footer.svelte';
+  import { goto } from '$app/navigation';
+  import { Button } from "$lib/components/ui/button/index.js";
   import { onMount } from 'svelte';
+  import Benefits from './Benefits.svelte';
+  import Faq from './Faq.svelte';
+  import Footer from './Footer.svelte';
+  import Introduction from './Introduction.svelte';
+  import Navbar from './Navbar.svelte';
+  import Solution from './Solution.svelte';
 
   let NotifyForm: typeof import('./NotifyForm.svelte').default = $state();
 
@@ -14,6 +15,10 @@
     const module = await import('./NotifyForm.svelte');
     NotifyForm = module.default;
   });
+
+  function shopNow() {
+    goto('/products/bloom');
+  }
 </script>
 
 <svelte:head>
@@ -45,8 +50,11 @@
   </script>
 </svelte:head>
 
-
 <Navbar />
+
+<div class="shop-now-section mt-32 text-center">
+  <Button class="bg-blue-500 text-white py-2 px-4 rounded" onclick={shopNow}>SHOP NOW</Button>
+</div>
 
 <div class="introduction-section mt-16">
   <Introduction />
@@ -72,9 +80,7 @@
   {#if NotifyForm}
     <NotifyForm />
   {/if}
-  <!-- <NotifyForm /> -->
 </div>
-
 
 <div class="faq-section mt-32">
   <Footer />
