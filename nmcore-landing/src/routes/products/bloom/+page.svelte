@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { Button } from "$lib/components/ui/button/index.js";
+  import * as Carousel from "$lib/components/ui/carousel/index.js";
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import type { CartProduct, Product } from '$lib/types';
   import ShoppingCart from 'phosphor-svelte/lib/ShoppingCart';
@@ -96,75 +97,26 @@
 </script>
 
 <style>
-  .large-photo {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .thumbnail {
-    cursor: pointer;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    margin: 5px;
-  }
-  .thumbnails {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .quantity-chooser {
-    display: flex;
-    align-items: center;
-  }
-  .quantity-button {
-    background-color: #e2e8f0;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  .quantity-display {
-    margin: 0 10px;
-    width: 30px;
-    text-align: center;
-  }
-  .sheet-footer {
-    position: sticky;
-    bottom: 0;
-    background-color: white;
-    padding: 10px;
-    border-top: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .checkout-button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    text-align: center;
-  }
-  @media (max-width: 500px) {
-    .flex.items-center {
-      flex-direction: column;
-      align-items: flex-start;
+  @media (max-width: 768px) {
+    .carousel-container {
+      display: block;
     }
-    .ml-4 {
-      margin-left: 0;
-      margin-top: 10px;
+    .thumbnails, .static-photo {
+      display: none;
     }
-    .quantity-chooser {
-      margin-top: 10px;
+  }
+  @media (min-width: 769px) {
+    .carousel-container {
+      display: none;
+    }
+    .static-photo {
+      display: block;
     }
   }
 </style>
 
 <div class="flex items-center bg-gray-300 p-4">
-  <span class="text-lg font-bold">SvelteMart</span>
+  <span class="text-lg font-bold">NMCore</span>
   <div class="relative ml-auto flex items-center">
     <button
       onclick={toggleCart}
@@ -179,15 +131,31 @@
 <main class="container mx-auto py-8">
   <div class="flex flex-wrap">
     <div class="w-full md:w-1/2">
-      <div class="text-center">
-        <img src={$largePhoto} alt="Large Product Photo" class="large-photo" onerror={() => console.error('Error loading large photo:', $largePhoto)} />
+      <div class="text-center static-photo">
+        <img src={$largePhoto} class="w-full max-h-96 mx-auto object-contain" alt="Large product photo" onerror={() => console.error('Error loading large photo:', $largePhoto)} />
       </div>
 
-      <div class="thumbnails mt-8">
+      <div class="carousel-container mt-8">
+        <Carousel.Root>
+          <Carousel.Content>
+            {#each data.products as product}
+              {#each product.images as photo, i (i)}
+                <Carousel.Item>
+                  <img src={photo} alt={`Product Photo ${i + 1}`} class="w-full max-h-96 mx-auto object-contain" onerror={() => console.error('Error loading photo:', photo)} />
+                </Carousel.Item>
+              {/each}
+            {/each}
+          </Carousel.Content>
+          <Carousel.Previous />
+          <Carousel.Next />
+        </Carousel.Root>
+      </div>
+
+      <div class="thumbnails mt-8 flex justify-center flex-wrap">
         {#each data.products as product}
           {#each product.images as photo, i (i)}
-            <button type="button" class="thumbnail-button" onclick={() => selectPhoto(photo)} onkeydown={(e) => e.key === 'Enter' && selectPhoto(photo)}>
-              <img src={photo} alt={`Product Photo ${i + 1}`} class="thumbnail" onerror={() => console.error('Error loading thumbnail:', photo)} />
+            <button type="button" class="cursor-pointer w-24 h-24 object-contain m-1" onclick={() => selectPhoto(photo)} onkeydown={(e) => e.key === 'Enter' && selectPhoto(photo)}>
+              <img src={photo} alt={`Product Photo ${i + 1}`} class="w-full h-full object-contain" onerror={() => console.error('Error loading thumbnail:', photo)} />
             </button>
           {/each}
         {/each}
@@ -214,7 +182,7 @@
 </main>
 
 <Sheet.Root open={$cartOpen} onOpenChange={toggleCart}>
-  <Sheet.Content style="width: 60vw; max-width: 512px; max-height: calc(100vh - 100px); overflow-y: auto;">
+  <Sheet.Content class="w-3/5 max-w-lg max-h-[calc(100vh-100px)] overflow-y-auto">
     <Sheet.Header>
       <Sheet.Title>Shopping Cart</Sheet.Title>
     </Sheet.Header>
@@ -222,14 +190,14 @@
       {#if $cartProducts.length > 0}
         {#each $cartProducts as item, index}
           <div class="flex items-center mb-4">
-            <img src={item.product.thumbnail} alt="Product Thumbnail" class="thumbnail" />
+            <img src={item.product.thumbnail} alt="Product Thumbnail" class="w-24 h-24 object-contain m-1" />
             <div class="ml-4">
               <p class="font-bold">{item.product.title}</p>
               <p>Size: {$size}</p>
-              <div class="quantity-chooser">
-                <button class="quantity-button" onclick={() => updateQuantity(item.id, -1)}>-</button>
-                <span class="quantity-display">{item.quantity}</span>
-                <button class="quantity-button" onclick={() => updateQuantity(item.id, 1)}>+</button>
+              <div class="flex items-center">
+                <button class="bg-gray-200 border-none p-2 cursor-pointer" onclick={() => updateQuantity(item.id, -1)}>-</button>
+                <span class="mx-2 w-8 text-center">{item.quantity}</span>
+                <button class="bg-gray-200 border-none p-2 cursor-pointer" onclick={() => updateQuantity(item.id, 1)}>+</button>
               </div>
               <p>Total: ${(item.product.price * item.quantity).toFixed(2)}</p>
             </div>
@@ -239,7 +207,7 @@
           <p class="font-bold">YOU'LL ALSO LOVE</p>
           {#each data.products as product}
             <div class="flex items-center mt-2">
-              <img src={product.images[0]} alt="{product.title} Thumbnail" class="thumbnail" />
+              <img src={product.images[0]} alt="{product.title} Thumbnail" class="w-24 h-24 object-contain m-1" />
               <div class="ml-4">
                 <p class="font-bold">{product.title}</p>
                 <p>${product.price.toFixed(2)}</p>
@@ -253,10 +221,10 @@
       {/if}
     </Sheet.Description>
     {#if $cartProducts.length > 0}
-      <div class="sheet-footer">
+      <div class="sticky bottom-0 bg-white p-4 border-t border-gray-200 flex flex-col items-center">
         <span>Subtotal: ${$cartStats.total.toFixed(2)}</span>
         <p class="text-gray-600 text-sm">Shipping, taxes, and discount codes calculated at checkout.</p>
-        <button class="checkout-button" onclick={goToCheckout}>Checkout</button>
+        <button class="bg-green-500 text-white p-4 rounded mt-4 w-full text-center" onclick={goToCheckout}>Checkout</button>
       </div>
     {/if}
   </Sheet.Content>
