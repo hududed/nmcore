@@ -41,10 +41,13 @@
 	"dependencies": {
 		"@react-email/components": "0.0.25",
 		"@sendgrid/mail": "^8.1.4",
+		"@stripe/stripe-js": "^5.2.0",
+		"@sveltejs/adapter-node": "^5.2.9",
 		"@sveltejs/adapter-static": "^3.0.5",
-		"dotenv": "^16.4.5",
+		"dotenv": "^16.4.7",
 		"firebase": "^10.14.1",
 		"firebase-admin": "^12.7.0",
-		"next": "^15.0.1"
+		"next": "^15.0.1",
+		"stripe": "^17.4.0"
 	}
 }
