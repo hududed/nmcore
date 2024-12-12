@@ -20,7 +20,7 @@
     <div class="cards grid grid-cols-1 gap-2 md:grid-cols-2 max-w-screen-xl">
       <Card.Root class="bg-zinc-800 p-4 rounded-lg border border-zinc-600">
         <Card.Header class="p-4">
-          <Card.Title class="text-3xl sm:text-4xl text-left mb-0 text-zinc-50">60% More Yield</Card.Title>
+          <Card.Title class="text-3xl sm:text-4xl text-left mb-0 text-zinc-50">30% More Yield</Card.Title>
         </Card.Header>
         <Card.Content class="p-4">
           <p class="text-xl sm:text-2xl text-left leading-tight mt-1 text-zinc-300">
@@ -31,11 +31,11 @@
 
       <Card.Root class="bg-zinc-800 p-4 rounded-lg border border-zinc-600">
         <Card.Header class="p-4">
-          <Card.Title class="text-3xl sm:text-4xl text-left mb-0 text-zinc-50">20% Faster</Card.Title>
+          <Card.Title class="text-3xl sm:text-4xl text-left mb-0 text-zinc-50">Low-light Hero</Card.Title>
         </Card.Header>
         <Card.Content class="p-4">
           <p class="text-xl sm:text-2xl text-left leading-tight mt-1 text-zinc-300">
-            Enjoy a shorter crop cycle, faster turnaround times and enhanced farming efficiency.
+            Boost your plant’s ability to photosynthesize in low-light conditions. 
           </p>
         </Card.Content>
       </Card.Root>

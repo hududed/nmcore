@@ -3,14 +3,30 @@
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import { addToCart, cartOpen, cartProducts, cartStats, updateQuantity } from '$lib/stores/cartStore';
   import { size } from '$lib/stores/productStore';
-  import type { Product } from '$lib/types';
+  import type { CustomerInfo, Product } from '$lib/types';
   import { goToCheckout } from '$lib/utils/helpers';
 
   export let products: Product[] = [];
   export let open: boolean;
 
+  let customerInfo: CustomerInfo = {
+    name: '',
+    email: '',
+    address: {
+      line1: '',
+      city: '',
+      state: '',
+      postal_code: '',
+      country: 'US',
+    },
+  };
+
   function toggleCart() {
     cartOpen.update(open => !open);
+  }
+
+  function handleCheckout() {
+    goToCheckout(customerInfo);
   }
 </script>
 
@@ -57,7 +73,7 @@
       <div class="sticky bottom-0 bg-white p-4 border-t border-gray-200 flex flex-col items-center">
         <span>Subtotal: ${$cartStats.total.toFixed(2)}</span>
         <p class="text-gray-600 text-sm">Shipping, taxes, and discount codes calculated at checkout.</p>
-        <button class="bg-green-500 text-white p-4 rounded mt-4 w-full text-center" onclick={goToCheckout}>Checkout</button>
+        <button class="bg-green-500 text-white p-4 rounded mt-4 w-full text-center" onclick={handleCheckout}>Checkout</button>
       </div>
     {/if}
   </Sheet.Content>

@@ -30,24 +30,35 @@ export type CartProduct = {
   quantity: number;
 };
 
-
 export type Dimensions = {
-	width: number;
-	height: number;
-	depth: number;
+  width: number;
+  height: number;
+  depth: number;
 };
 
 export type Review = {
-	rating: number;
-	comment: string;
-	date: string;
-	reviewerName: string;
-	reviewerEmail: string;
+  rating: number;
+  comment: string;
+  date: string;
+  reviewerName: string;
+  reviewerEmail: string;
 };
 
 export type Meta = {
-	createdAt: string;
-	updatedAt: string;
-	barcode: string;
-	qrCode: string;
+  createdAt: string;
+  updatedAt: string;
+  barcode: string;
+  qrCode: string;
+};
+
+export type CustomerInfo = {
+  name: string;
+  email: string;
+  address: {
+    line1: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    country: string;
+  };
 };
