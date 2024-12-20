@@ -53,6 +53,6 @@
 		"firebase-functions": "^6.1.2",
 		"nanoid": "^5.0.9",
 		"next": "^15.0.1",
-		"stripe": "^17.4.0"
+		"stripe": "^17.5.0"
 	}
 }
