@@ -3,23 +3,43 @@
   import Carousel from '$lib/components/Carousel.svelte';
   import ProductDetails from '$lib/components/ProductDetails.svelte';
   import Thumbnail from '$lib/components/Thumbnail.svelte';
-  import { largePhoto, selectedProduct } from '$lib/stores/productStore';
+  import { db } from '$lib/firebase';
+  import { largePhoto, selectedProduct, size } from '$lib/stores/productStore';
   import type { Product } from '$lib/types';
+  import { collection, getDocs } from 'firebase/firestore';
   import { onMount } from 'svelte';
 
-  let products: Product[] = [];
-  let variant: string | null = null;
+  let products = $state<Product[]>([]);
+  let variant = $state<string | null>(null);
+  let selectedSizeCode = $state<string | null>(null);
 
-  $: variant = new URLSearchParams($page.url.search).get('variant');
+  $effect(() => {
+    const urlParams = new URLSearchParams($page.url.search);
+    variant = urlParams.get('variant');
+    selectedSizeCode = urlParams.get('size');
+  });
 
-  onMount(async () => {
-    const res = await fetch('/api/products');
-    products = await res.json();
-
-    const product = variant ? products.find(p => p.id === Number(variant)) : products[0];
+  $effect(() => {
+    const product = variant ? products.find(p => p.id === variant) : products[0];
     if (product) {
       selectedProduct.set(product);
       largePhoto.set(product.images[0]);
+      const selectedSize = product.productSizes.find(size => size.code === selectedSizeCode) || null;
+      size.set(selectedSize);
+    }
+  });
+
+  onMount(async () => {
+    const productsCol = collection(db, 'products');
+    const productSnapshot = await getDocs(productsCol);
+    products = productSnapshot.docs.map(doc => doc.data() as Product);
+
+    const product = variant ? products.find(p => p.id === variant) : products[0];
+    if (product) {
+      selectedProduct.set(product);
+      largePhoto.set(product.images[0]);
+      const selectedSize = product.productSizes.find(size => size.code === selectedSizeCode) || null;
+      size.set(selectedSize);
     }
   });
 </script>

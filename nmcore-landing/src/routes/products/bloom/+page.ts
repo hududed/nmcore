@@ -1,14 +1,12 @@
+import { collection, getDocs } from 'firebase/firestore';
 import type { Product } from '$lib/types';
-import type { PageLoad } from './$types';
+import { db } from '$lib/firebase';
 
-export const load: PageLoad = async ({ fetch }) => {
-  const response = await fetch('/api/products');
-  if (!response.ok) {
-    throw new Error('Failed to fetch products');
-  }
-  const products: Product[] = await response.json();
-
+export async function load() {
+  const productsCol = collection(db, 'products');
+  const productSnapshot = await getDocs(productsCol);
+  const productList = productSnapshot.docs.map(doc => doc.data() as Product);
   return {
-    products
+    products: productList
   };
-};
+}

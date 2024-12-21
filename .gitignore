@@ -29,3 +29,6 @@ yarn-error.log*
 
 scraper
 app
+
+# Ignore service account key
+config/serviceAccountKey.json

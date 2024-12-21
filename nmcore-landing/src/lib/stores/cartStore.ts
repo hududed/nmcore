@@ -1,47 +1,45 @@
-import type { CartProduct, Product } from '$lib/types';
-import { derived, writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
+import type { Product, ProductSize, CartProduct } from '$lib/types';
 
 export const cartProducts = writable<CartProduct[]>([]);
 export const cartOpen = writable(false);
 
 export const cartStats = derived(cartProducts, ($cartProducts) => {
-  let quantity = 0;
-  let total = 0;
-  for (const product of $cartProducts) {
-    quantity += product.quantity;
-    total += product.product.price * product.quantity;
-  }
+  const total = $cartProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
   return {
-    quantity,
-    total
+    total,
+    itemCount: $cartProducts.length,
   };
 });
 
-export function updateQuantity(id: string, delta: number) {
-  cartProducts.update(products => {
-    const index = products.findIndex(product => product.id === id);
-    if (index !== -1) {
-      products[index].quantity += delta;
-      if (products[index].quantity <= 0) {
-        products.splice(index, 1);
-      }
+export function addToCart(product: Product, size: ProductSize) {
+  cartProducts.update((items) => {
+    const existingItem = items.find((item) => item.product.id === product.id && item.size === size.code);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      items.push({
+        id: `${product.id}-${size.code}`,
+        product,
+        size: size.code,
+        price: size.price,
+        quantity: 1,
+        stripePriceId: size.stripePriceId,
+      });
     }
-    return [...products];
+    return items;
   });
 }
 
-export function addToCart(product: Product) {
-  cartProducts.update(products => {
-    const index = products.findIndex(p => p.product.id === product.id);
-    if (index !== -1) {
-      products[index].quantity += 1;
-    } else {
-      products.push({
-        id: crypto.randomUUID(),
-        quantity: 1,
-        product: product
-      });
+export function updateQuantity(id: string, delta: number) {
+  cartProducts.update((items) => {
+    const item = items.find((item) => item.id === id);
+    if (item) {
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        return items.filter((item) => item.id !== id);
+      }
     }
-    return [...products];
+    return items;
   });
 }

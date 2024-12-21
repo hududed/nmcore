@@ -1,35 +1,3 @@
-// types.ts
-export type Product = {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  tags: string[];
-  brand: string;
-  sku: string;
-  weight: number;
-  dimensions: Dimensions;
-  warrantyInformation: string;
-  shippingInformation: string;
-  availabilityStatus: string;
-  reviews: Review[];
-  returnPolicy: string;
-  minimumOrderQuantity: number;
-  meta: Meta;
-  thumbnail: string;
-  images: string[];
-};
-
-export type CartProduct = {
-  id: string;
-  product: Product;
-  quantity: number;
-};
-
 export type Dimensions = {
   width: number;
   height: number;
@@ -51,6 +19,47 @@ export type Meta = {
   qrCode: string;
 };
 
+export type ProductSize = {
+  availabilityStatus: string;
+  code: string;
+  dimensions: Dimensions;
+  price: number;
+  sku: string;
+  stock: number;
+  stripePriceId: string;
+  stripeProductId: string;
+  weight: number;
+};
+
+export type Product = {
+  id: string;
+  brand: string;
+  category: string;
+  desc: string;
+  discountPercentage: number;
+  images: string[];
+  meta: Meta;
+  minimumOrderQuantity: number;
+  productSizes: ProductSize[];
+  rating: number;
+  returnPolicy: string;
+  reviews: Review[];
+  shippingInformation: string;
+  tags: string[];
+  thumbnail: string;
+  title: string;
+  warrantyInformation: string;
+};
+
+export type CartProduct = {
+  id: string;
+  product: Product;
+  size: string;
+  price: number;
+  quantity: number;
+  stripePriceId: string;
+};
+
 export type CustomerInfo = {
   name: string;
   email: string;
@@ -62,3 +71,26 @@ export type CustomerInfo = {
     country: string;
   };
 };
+
+// stripe webhook
+export interface Item {
+  name: string;
+  price: number;
+  quantity: number;
+  productId: string;
+  sizeCode: string;
+  stripePriceId: string;
+}
+
+export interface RequestBody {
+  items: Item[];
+}
+
+// response emails
+export type EmailData = {
+  name: string;
+  orderId: string;
+  email: string;
+}
+
+export type EmailType = 'confirmation' | 'shippingNotification' | 'inviteCollaboration';

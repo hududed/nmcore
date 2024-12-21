@@ -1,21 +1,25 @@
-// src/routes/api/checkout/+server.ts
 import { generateShortOrderId } from '$lib/utils/helpers';
 import type { RequestHandler } from '@sveltejs/kit';
 import Stripe from 'stripe';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+import type { Item, RequestBody } from '$lib/types';
+
+// Load the service account key from the environment variable
+const serviceAccountPath = resolve(process.env.VITE_FIREBASE_SERVICE_ACCOUNT_KEY_PATH);
+const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
+
+// Initialize Firebase app if not already initialized
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount)
+  });
+}
 
 const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2024-12-18.acacia',
 });
-
-interface Item {
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-interface RequestBody {
-  items: Item[];
-}
 
 export const GET: RequestHandler = async () => {
   console.log('GET request received at /api/checkout');
@@ -41,18 +45,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const orderId = generateShortOrderId();
 
+    const lineItems = items.map((item: Item) => {
+      if (!item.stripePriceId) {
+        throw new Error(`Stripe price ID is missing for item: ${item.name}`);
+      }
+      return {
+        price: item.stripePriceId,
+        quantity: item.quantity,
+      };
+    });
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: items.map((item: Item) => ({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.name,
-          },
-          unit_amount: Math.round(item.price * 100), // Convert to cents
-        },
-        quantity: item.quantity,
-      })),
+      line_items: lineItems,
       mode: 'payment',
       success_url: successUrl,
       cancel_url: cancelUrl,
@@ -62,6 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       metadata: {
         order_id: orderId, // Attach the order ID to the session metadata
+        items: JSON.stringify(items) // Attach items to metadata for processing in webhook
       },
       shipping_options: [
         {

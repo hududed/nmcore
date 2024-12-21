@@ -3,5 +3,6 @@ import { initializeApp } from 'firebase-admin/app';
 
 initializeApp();
 
-export { sendEmail } from './sendEmail';
+// export { sendEmail } from './sendEmail';
 export { stripeWebhook } from './stripeWebhook';
+
