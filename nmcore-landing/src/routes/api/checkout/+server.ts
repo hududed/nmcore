@@ -1,23 +1,29 @@
+import type { Item, RequestBody } from '$lib/types';
 import { generateShortOrderId } from '$lib/utils/helpers';
 import type { RequestHandler } from '@sveltejs/kit';
-import Stripe from 'stripe';
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
-import type { Item, RequestBody } from '$lib/types';
+import Stripe from 'stripe';
 
-// Load the service account key from the environment variable
-const serviceAccountPath = resolve(process.env.VITE_FIREBASE_SERVICE_ACCOUNT_KEY_PATH);
+
+// Use `process.env` for secrets
+const serviceAccountPath = process.env.VITE_FIREBASE_SERVICE_ACCOUNT_KEY_PATH;
+if (!serviceAccountPath) {
+  throw new Error('Missing VITE_FIREBASE_SERVICE_ACCOUNT_KEY_PATH in environment variables');
+}
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
 
-// Initialize Firebase app if not already initialized
 if (!getApps().length) {
   initializeApp({
-    credential: cert(serviceAccount)
+    credential: cert(serviceAccount),
   });
 }
 
-const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY, {
+const stripeSecretKey = process.env.VITE_STRIPE_SECRET_KEY;
+if (!stripeSecretKey) {
+  throw new Error('Missing VITE_STRIPE_SECRET_KEY in environment variables');
+}
+const stripe = new Stripe(stripeSecretKey, {
   apiVersion: '2024-12-18.acacia',
 });
 
@@ -26,8 +32,8 @@ export const GET: RequestHandler = async () => {
   return new Response('API route is working', {
     status: 200,
     headers: {
-      'Content-Type': 'text/plain'
-    }
+      'Content-Type': 'text/plain',
+    },
   });
 };
 
@@ -37,11 +43,9 @@ export const POST: RequestHandler = async ({ request }) => {
   console.log('Items:', items);
 
   try {
+    // Use `import.meta.env` for public values
     const successUrl = `${import.meta.env.VITE_PUBLIC_FRONTEND_URL}/status/checkout/success`;
     const cancelUrl = `${import.meta.env.VITE_PUBLIC_FRONTEND_URL}/status/checkout/fail`;
-
-    console.log('Success URL:', successUrl);
-    console.log('Cancel URL:', cancelUrl);
 
     const orderId = generateShortOrderId();
 
@@ -67,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       metadata: {
         order_id: orderId, // Attach the order ID to the session metadata
-        items: JSON.stringify(items) // Attach items to metadata for processing in webhook
+        items: JSON.stringify(items), // Attach items to metadata for processing in webhook
       },
       shipping_options: [
         {
@@ -95,19 +99,28 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log('Stripe session created:', session.id);
 
-    return new Response(JSON.stringify({ id: session.id, orderId }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json'
+    return new Response(
+      JSON.stringify({
+        id: session.id,
+        orderId,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    });
+    );
   } catch (error) {
     console.error('Error creating Stripe session:', error);
-    return new Response(JSON.stringify({ error: 'Error creating Stripe session' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
+    return new Response(
+      JSON.stringify({ error: 'Error creating Stripe session' }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    });
+    );
   }
 };

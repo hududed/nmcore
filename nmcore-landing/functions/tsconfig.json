@@ -4,6 +4,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
+    "rootDir": "src",  
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": false, // <-- add this line
@@ -14,6 +15,5 @@
   "compileOnSave": true,
   "include": [
     "src",
-    "src/types"
-, "../../types.ts", "src/sendEmail.ts"  ]
+    "src/types"]
 }
