@@ -32,7 +32,7 @@
       <img src="/images/nmcore_logo.jpg" alt="NMCore BLOOM Logo" class="w-36 lg:w-48" />
     </div>
     <div class="hidden md:flex space-x-4 text-sm lg:text-base">
-      <a href="/products/bloom" class="text-gray-700 hover:text-gray-900">SHOP</a>
+      <a href="/products/nm_bloom_household" class="text-gray-700 hover:text-gray-900">SHOP</a>
       <a href="/technology" class="text-gray-700 hover:text-gray-900">TECHNOLOGY</a>
       <a href="/about" class="text-gray-700 hover:text-gray-900">ABOUT</a>
     </div>

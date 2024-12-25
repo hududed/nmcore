@@ -1,16 +1,28 @@
 <script lang="ts">
-  import { largePhoto } from '$lib/stores/productStore';
-  import type { Product } from '$lib/types';
+  import { CldImage } from 'svelte-cloudinary';
 
-  export let products: Product[] = [];
+  export let images: string[] = []; // Array of Cloudinary public IDs
+  export let useCldImage: boolean = true; // Toggle to use CldImage or plain img
+  export let cloudName: string; // Cloudinary cloud name (required for plain img)
 </script>
 
 <div class="thumbnails mt-8 flex justify-center flex-wrap">
-  {#each products as product}
-    {#each product.images as photo, i (i)}
-      <button type="button" class="cursor-pointer w-24 h-24 object-contain m-1" onclick={() => largePhoto.set(photo)} onkeydown={(e) => e.key === 'Enter' && largePhoto.set(photo)}>
-        <img src={photo} alt={`Product Photo ${i + 1}`} class="w-full h-full object-contain" onerror={() => console.error('Error loading thumbnail:', photo)} />
-      </button>
-    {/each}
+  {#each images as cloudinaryId (cloudinaryId)}
+    {#if useCldImage}
+      <CldImage
+        src={cloudinaryId}
+        width={150}
+        height={150}
+        objectFit="contain"
+        alt="Thumbnail"
+        class="w-24 h-24 object-contain m-1"
+      />
+    {:else}
+      <img
+        src={`https://res.cloudinary.com/${cloudName}/image/upload/${cloudinaryId}`}
+        alt="Thumbnail"
+        class="w-24 h-24 object-contain m-1"
+      />
+    {/if}
   {/each}
 </div>

@@ -1,13 +1,15 @@
-import { writable, derived } from 'svelte/store';
-import type { Product, ProductSize, CartProduct } from '$lib/types';
+import type { CartProduct, Product, ProductSize } from '$lib/types';
+import { derived, writable } from 'svelte/store';
 
 export const cartProducts = writable<CartProduct[]>([]);
 export const cartOpen = writable(false);
 
 export const cartStats = derived(cartProducts, ($cartProducts) => {
   const total = $cartProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const quantity = $cartProducts.reduce((sum, item) => sum + item.quantity, 0);
   return {
     total,
+    quantity,
     itemCount: $cartProducts.length,
   };
 });

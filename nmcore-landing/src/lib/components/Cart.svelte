@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import { cartOpen, cartProducts, cartStats, updateQuantity } from '$lib/stores/cartStore';
-  import { goToCheckout } from '$lib/utils/helpers';
+  import { goToCheckout } from '$lib/utils/checkout';
 
   export let open: boolean;
 

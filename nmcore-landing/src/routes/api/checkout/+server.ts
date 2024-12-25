@@ -1,5 +1,5 @@
 import type { Item, RequestBody } from '$lib/types';
-import { generateShortOrderId } from '$lib/utils/helpers';
+import { generateShortOrderId } from '$lib/utils/checkout';
 import type { RequestHandler } from '@sveltejs/kit';
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { readFileSync } from 'fs';
@@ -7,9 +7,9 @@ import Stripe from 'stripe';
 
 
 // Use `process.env` for secrets
-const serviceAccountPath = process.env.VITE_FIREBASE_SERVICE_ACCOUNT_KEY_PATH;
+const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH;
 if (!serviceAccountPath) {
-  throw new Error('Missing VITE_FIREBASE_SERVICE_ACCOUNT_KEY_PATH in environment variables');
+  throw new Error('Missing FIREBASE_SERVICE_ACCOUNT_KEY_PATH in environment variables');
 }
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
 

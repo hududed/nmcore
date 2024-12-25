@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import { Input } from "$lib/components/ui/input";
   import { Button } from "$lib/components/ui/button"; 
   import { toast } from "svelte-sonner";
@@ -54,5 +54,5 @@
   <div>
     <Input id="number" type="tel" bind:value={number} placeholder="Mobile Number" required />
   </div>
-  <Button type="submit">Submit</Button> <!-- Use the shadcn button component -->
-</form>
+  <Button type="submit">Submit</Button> 
+</form> -->

@@ -1,22 +1,29 @@
 <script lang="ts">
-  import * as Carousel from "$lib/components/ui/carousel/index.js";
-  import type { Product } from '$lib/types';
+    import { CldImage } from 'svelte-cloudinary';
 
-  export let products: Product[] = [];
+  export let images: string[] = []; // Array of Cloudinary public IDs
+  export let useCldImage: boolean = true; // Optional toggle to use CldImage
 </script>
 
 <div class="carousel-container mt-8">
-  <Carousel.Root>
-    <Carousel.Content>
-      {#each products as product}
-        {#each product.images as photo, i (i)}
-          <Carousel.Item>
-            <img src={photo} alt={`Product Photo ${i + 1}`} class="w-full max-h-96 mx-auto object-contain" onerror={() => console.error('Error loading photo:', photo)} />
-          </Carousel.Item>
-        {/each}
-      {/each}
-    </Carousel.Content>
-    <Carousel.Previous />
-    <Carousel.Next />
-  </Carousel.Root>
+  {#each images as cloudinaryId, i (i)}
+    <div class="carousel-item w-full max-h-96">
+      {#if useCldImage}
+        <CldImage
+          src={cloudinaryId}
+          width={600}
+          height={600}
+          objectFit="cover"
+          alt={`Carousel Photo ${i + 1}`}
+          class="w-full max-h-96 mx-auto object-contain"
+        />
+      {:else}
+        <img
+          src={`https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload/${cloudinaryId}`}
+          alt={`Carousel Photo ${i + 1}`}
+          class="w-full max-h-96 mx-auto object-contain"
+        />
+      {/if}
+    </div>
+  {/each}
 </div>

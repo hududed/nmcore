@@ -3,7 +3,8 @@
   import { Button } from "$lib/components/ui/button/index.js";
 
   function shopNow() {
-    goto('/products/bloom');
+    // Navigate to the product page dynamically with ID
+    goto('/products/nm_bloom_household'); // Replace with dynamic ID if applicable
   }
 </script>
 

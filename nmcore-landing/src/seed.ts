@@ -10,7 +10,8 @@ initializeApp({
 
 const db = getFirestore();
 
-// This productSizes is a literal array in JavaScript, so Firestore will store it as an array.
+// 3. Define your product data
+// Define product data
 const products = [
   {
     id: "nm_bloom_household",
@@ -18,22 +19,32 @@ const products = [
     category: "Household",
     desc: "Bloom is an organic advanced nanotechnology foliar spray that helps plants struggling in low-light environments.",
     discountPercentage: 0,
-    images: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
+
+    // Top-level images for universal display
+    images: [
+      { cloudinaryId: "cld-sample-2", width: 1920, height: 1080 },
+      { cloudinaryId: "cld-sample-3", width: 1920, height: 1080 },
+      { cloudinaryId: "cld-sample-4", width: 1920, height: 1080 },
+      { cloudinaryId: "cld-sample-5", width: 1920, height: 1080 },
+    ],
+
     meta: {
       barcode: "123456789012",
       createdAt: "2024-12-15T23:35:56.940Z",
       qrCode: "https://example.com/qrcode",
       updatedAt: "2024-12-15T23:35:56.940Z"
     },
+
     minimumOrderQuantity: 1,
 
-    // *** Key part: productSizes is a real array, not a map. ***
+    // Each product size with its own main image
     productSizes: [
       {
-        availabilityStatus: "In Stock",
         code: "refill",
+        mainImage: { cloudinaryId: "cld-sample-2", width: 1080, height: 1920 },
+        availabilityStatus: "In Stock",
         dimensions: { depth: 5, height: 20, width: 10 },
-        price: 2799,
+        price: 2799, // in cents
         sku: "BLOOM-REFILL",
         stock: 50,
         stripePriceId: "price_1QTb07GV3ULNhXDgRL5KAHhy",
@@ -41,10 +52,11 @@ const products = [
         weight: 1.2
       },
       {
-        availabilityStatus: "In Stock",
         code: "starter_kit",
+        mainImage: { cloudinaryId: "cld-sample-3", width: 1080, height: 1920 },
+        availabilityStatus: "In Stock",
         dimensions: { depth: 6, height: 24, width: 12 },
-        price: 3999,
+        price: 3999, // in cents
         sku: "BLOOM-STARTER",
         stock: 30,
         stripePriceId: "price_1QTazPGV3ULNhXDgVKPCIwRn",
@@ -68,24 +80,25 @@ async function seedFirestore() {
   const batch = db.batch();
 
   for (const product of products) {
-    // Create a top-level array of stripePriceIds for quick lookups in your webhook
+    // Extract stripePriceIds for quick lookup
     const stripePriceIds = product.productSizes.map((size) => size.stripePriceId);
 
-    // Force productSizes to remain an array
+    // Build the document object
     const productDoc = {
       ...product,
-      productSizes: [...product.productSizes], // Ensure it's truly an array
+      productSizes: [...product.productSizes], // Ensure productSizes remains an array
       stripePriceIds
     };
 
-    // Overwrite the entire doc so old data doesn't remain
+    // Reference Firestore document by ID
     const productRef = db.collection('products').doc(product.id);
-    batch.set(productRef, productDoc, { merge: false }); 
-    // note: merge:false ensures we replace any old map with the new array
+    batch.set(productRef, productDoc, { merge: false }); // Overwrite existing doc
   }
 
+  // Commit the batch
   await batch.commit();
-  console.log('Firestore seeding completed with productSizes as an array and stripePriceIds at top level.');
+  console.log('Firestore seeding completed with Cloudinary image references.');
 }
 
+// Run the seed script
 seedFirestore().catch(console.error);

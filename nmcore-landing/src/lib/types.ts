@@ -21,11 +21,22 @@ export type Meta = {
   qrCode: string;
 };
 
+export type CloudinaryImage = {
+  cloudinaryId: string;
+  width?: number;
+  height?: number;
+};
+
 export type ProductSize = {
   availabilityStatus: string;
-  code: string; // e.g. "refill" or "starter_kit"
-  dimensions: Dimensions;
-  price: number; // price in cents
+  code: string;
+  dimensions: {
+    depth: number;
+    height: number;
+    width: number;
+  };
+  mainImage: CloudinaryImage; // Updated to reflect the structure of `mainImage`
+  price: number;
   sku: string;
   stock: number;
   stripePriceId: string;
@@ -39,19 +50,20 @@ export type Product = {
   category: string;
   desc: string;
   discountPercentage: number;
-  images: string[];
-  meta: Meta;
+  images: CloudinaryImage[]; // Updated to reflect the structure of `images`
+  meta: {
+    barcode: string;
+    createdAt: string;
+    qrCode: string;
+    updatedAt: string;
+  };
   minimumOrderQuantity: number;
   productSizes: ProductSize[];
-  /**
-   * Newly added top-level array for Firestore queries.
-   * e.g. ["price_123abc", "price_456xyz"]
-   */
-  stripePriceIds: string[]; 
   rating: number;
   returnPolicy: string;
-  reviews: Review[];
+  reviews: any[]; // Adjust this type as per your reviews structure
   shippingInformation: string;
+  stripePriceIds: string[];
   tags: string[];
   thumbnail: string;
   title: string;

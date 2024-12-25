@@ -1,7 +1,7 @@
-import { db } from '$lib/firebase';
+// import { db } from '$lib/firebase';
 import { cartProducts } from '$lib/stores/cartStore';
 import { loadStripe } from '@stripe/stripe-js';
-import { collection, doc, writeBatch } from "firebase/firestore";
+// import { collection, doc, writeBatch } from "firebase/firestore";
 import { nanoid } from 'nanoid';
 import { get } from 'svelte/store';
 

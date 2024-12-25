@@ -6,7 +6,13 @@
   import { cartOpen } from '$lib/stores/cartStore';
   import type { Product } from '$lib/types';
   import { onMount } from 'svelte';
+  import { configureCloudinary } from 'svelte-cloudinary';
   import "../app.css";
+
+  // Set Cloudinary options globally
+  configureCloudinary({
+    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+  });
 
   interface Props {
     children?: import('svelte').Snippet;
