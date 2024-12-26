@@ -62,3 +62,11 @@ export async function fetchImageURLs(
 ): Promise<string[]> {
   return Promise.all(images.map((image) => fetchImageURL(image, transformations, fetch)));
 }
+
+export function getCloudinaryId(cloudinaryId: string): string {
+  if (!cloudinaryId) {
+    console.warn('Invalid Cloudinary ID:', cloudinaryId);
+    return '';
+  }
+  return cloudinaryId;
+}
