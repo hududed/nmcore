@@ -18,17 +18,15 @@
   // Local reactive state for the large photo
   let largePhotoSrc = $state<string | undefined>(initialMainImageSrc);
 
-  // let largePhotoSrc: string | undefined = initialMainImageSrc;
   onMount(() => {
     largePhoto.set(initialMainImageSrc);
+  });
 
+  $effect(() => {
     const unsubscribe = largePhoto.subscribe(value => {
       largePhotoSrc = value;
     });
-    // Cleanup when component unmounts
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   });
 
   function handleThumbnailClick(cloudinaryId: string) {
@@ -67,7 +65,6 @@
       <div class="block md:hidden mt-8">
         <Carousel
           images={data.product.images.map((image: CloudinaryImage) => getCloudinaryId(image.cloudinaryId))}
-          useCldImage={true}
         />
       </div>
     </div>
