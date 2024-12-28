@@ -49,7 +49,7 @@
   <Sheet.Content side="left" class="w-3/5 max-w-lg max-h-[calc(100vh-100px)] overflow-y-auto">
     <Sheet.Description>
       <div class="flex flex-col space-y-4">
-        <a href="/products/bloom" class="text-gray-700 hover:text-gray-900" onclick={() => navigateTo('/products/bloom')}>SHOP</a>
+        <a href="/products/nm_bloom_household" class="text-gray-700 hover:text-gray-900" onclick={() => navigateTo('/products/nm_bloom_household')}>SHOP</a>
         <a href="/technology" class="text-gray-700 hover:text-gray-900" onclick={() => navigateTo('/technology')}>TECHNOLOGY</a>
         <a href="/about" class="text-gray-700 hover:text-gray-900" onclick={() => navigateTo('/about')}>ABOUT</a>
       </div>

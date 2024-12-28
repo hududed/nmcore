@@ -1,22 +1,43 @@
 <script lang="ts">
+  import { type CarouselAPI } from "$lib/components/ui/carousel/context.js";
   import * as Carousel from "$lib/components/ui/carousel/index.js";
   import { largePhoto } from '$lib/stores/productStore';
   import { CldImage } from 'svelte-cloudinary';
 
-  export let images: string[] = []; // Array of Cloudinary public IDs
+  const { images } = $props<{ images: string[] }>(); // Array of Cloudinary public IDs
+
+  let api = $state<CarouselAPI>();
+  let currentImage = $state<string | undefined>(images[0]);
+
+  $effect(() => {
+    if (api) {
+      api.on("select", () => {
+        const selectedIndex = api.selectedScrollSnap();
+        currentImage = images[selectedIndex];
+        largePhoto.set(currentImage);
+      });
+    }
+  });
+
+  $effect(() => {
+    const unsubscribe = largePhoto.subscribe(value => {
+      currentImage = value;
+      if (api) {
+        const index = images.indexOf(value);
+        if (index !== -1) {
+          api.scrollTo(index);
+        }
+      }
+    });
+    return () => unsubscribe();
+  });
 
   function handleCarouselClick(cloudinaryId: string) {
     largePhoto.set(cloudinaryId);
   }
-
-  function handleKeyDown(event: KeyboardEvent, cloudinaryId: string) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      largePhoto.set(cloudinaryId);
-    }
-  }
 </script>
 
-<Carousel.Root>
+<Carousel.Root setApi={(emblaApi) => (api = emblaApi)}>
   <Carousel.Content>
     {#each images as cloudinaryId, i (i)}
       <Carousel.Item>
@@ -24,8 +45,7 @@
           type="button"
           class="carousel-item w-full max-h-96"
           aria-label={`Carousel Photo ${i + 1}`}
-          on:click={() => handleCarouselClick(cloudinaryId)}
-          on:keydown={(event) => handleKeyDown(event, cloudinaryId)}
+          onclick={() => handleCarouselClick(cloudinaryId)}
         >
           <CldImage
             src={cloudinaryId}
