@@ -20,7 +20,7 @@
   // Automatically update `largePhoto` whenever `selectedSize` changes
   $effect(() => {
     if (selectedSize) {
-      console.log('Setting largePhoto to ID:', selectedSize.mainImage.cloudinaryId);
+      // console.log('Setting largePhoto to ID:', selectedSize.mainImage.cloudinaryId);
       largePhoto.set(getCloudinaryId(selectedSize.mainImage.cloudinaryId)); // Pass only the ID
     }
   });
@@ -34,7 +34,7 @@
       selectedSize = newSelectedSize;
       size.set(newSelectedSize);
       largePhoto.set(getCloudinaryId(newSelectedSize.mainImage.cloudinaryId)); // Pass only the ID
-      console.log('Navigating to variant:', code);
+      // console.log('Navigating to variant:', code);
       goto(`/products/${product.id}?variant=${code}`, { replaceState: true });
     }
   }

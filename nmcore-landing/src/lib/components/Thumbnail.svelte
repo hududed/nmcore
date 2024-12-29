@@ -5,7 +5,7 @@
     images: string[];
     onThumbnailClick: (cloudinaryId: string) => void;
   }>();
-  console.log('Thumbnail images:', images);
+  // console.log('Thumbnail images:', images);
 
 </script>
 

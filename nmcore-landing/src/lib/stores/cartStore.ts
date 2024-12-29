@@ -27,6 +27,7 @@ export function addToCart(product: Product, size: ProductSize) {
         price: size.price,
         quantity: 1,
         stripePriceId: size.stripePriceId,
+        mainImage: size.mainImage, // Add mainImage to CartProduct
       });
     }
     return items;

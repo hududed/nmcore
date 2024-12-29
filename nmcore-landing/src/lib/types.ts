@@ -77,6 +77,7 @@ export type CartProduct = {
   price: number;
   quantity: number;
   stripePriceId: string;
+  mainImage: CloudinaryImage; // Add mainImage to CartProduct
 };
 
 export type CustomerInfo = {

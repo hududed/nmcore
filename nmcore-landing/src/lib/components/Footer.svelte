@@ -5,7 +5,7 @@
 <div class="bg-zinc-800 text-white p-4 py-8 lg:py-16 w-full">
   <div class="flex justify-between items-center max-w-screen-xl mx-auto">
     <div>
-      <img src="/images/nmcore_logo_onblack.png" alt="NMCore Logo Icon" class="inline-block w-48 sm:w-48 lg:w-72"/>
+      <img src="/images/nmcore_logo_onblack.png" alt="NMCore Logo Icon" class="inline-block w-40 md:w-48 lg:w-72 p-4"/>
     </div>
     <div class="text-left text-sm">
       <p>NMCORE, LLC</p>

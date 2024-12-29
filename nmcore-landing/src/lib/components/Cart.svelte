@@ -2,6 +2,8 @@
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import { cartOpen, cartProducts, cartStats, updateQuantity } from '$lib/stores/cartStore';
   import { goToCheckout } from '$lib/utils/checkout';
+  import { CldImage } from 'svelte-cloudinary';
+ // Import the CldImage component
 
   export let open: boolean;
 
@@ -23,7 +25,14 @@
       {#if $cartProducts.length > 0}
         {#each $cartProducts as item, index}
           <div class="flex items-center mb-4">
-            <img src={item.product.thumbnail} alt="Product Thumbnail" class="w-24 h-24 object-contain m-1" />
+            <CldImage
+              src={item.mainImage.cloudinaryId}
+              width={150}
+              height={150}
+              objectFit="contain"
+              alt="Product Thumbnail"
+              class="w-24 h-24 object-contain m-1"
+            />
             <div class="ml-4">
               <p class="font-bold">{item.product.title}</p>
               <p>Size: {item.size}</p>
