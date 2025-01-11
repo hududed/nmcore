@@ -1,5 +1,19 @@
 {
   "projects": {
-    "default": "nanogrowtech-609bc"
-  }
+    "default": "nanogrowtech-609bc",
+    "staging": "nanogrowtech-staging"
+  },
+  "targets": {
+    "nanogrowtech-staging": {
+      "hosting": {
+        "staging": [
+          "nanogrowtech-staging"
+        ],
+        "production": [
+          "nanogrowtech-609bc"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
