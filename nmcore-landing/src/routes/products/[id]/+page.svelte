@@ -1,6 +1,8 @@
 <script lang="ts">
   import Carousel from '$lib/components/Carousel.svelte';
   import ProductDetails from '$lib/components/ProductDetails.svelte';
+  import Meta from '$lib/components/seo/Meta.svelte';
+  import StructuredData from '$lib/components/seo/StructuredData.svelte';
   import Thumbnail from '$lib/components/Thumbnail.svelte';
   import { largePhoto } from '$lib/stores/productStore';
   import type { CloudinaryImage, Product } from '$lib/types';
@@ -33,6 +35,40 @@
     largePhoto.set(cloudinaryId);
   }
 </script>
+
+<!-- Meta Tags for SEO and Social Sharing -->
+<Meta
+  title={data.product.title}
+  description={data.product.desc}
+  keywords={data.product.tags}
+  url={`https://www.nmcore.com/products/${data.product.id}`}
+  image={data.product.thumbnail}
+/>
+
+<!-- Structured Data for Product -->
+<StructuredData
+  data={{
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": data.product.title,
+    "image": [data.product.thumbnail],
+    "description": data.product.desc,
+    "sku": data.product.productSizes[0]?.sku,
+    "brand": {
+      "@type": "Brand",
+      "name": data.product.brand
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://www.nmcore.com/products/${data.product.id}`,
+      "priceCurrency": "USD",
+      "price": (data.product.productSizes[0]?.price || 0) / 100,
+      "priceValidUntil": "2025-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": "https://schema.org/InStock"
+    }
+  }}
+/>
 
 <main class="container py-8 mt-24 md:mt-32">
   <div class="flex flex-wrap">
