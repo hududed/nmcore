@@ -1,11 +1,13 @@
 <script lang="ts">
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import { cartOpen, cartProducts, cartStats, updateQuantity } from '$lib/stores/cartStore';
+  import type { Product } from '$lib/types';
   import { goToCheckout } from '$lib/utils/checkout';
   import { CldImage } from 'svelte-cloudinary';
  // Import the CldImage component
 
-  export let open: boolean;
+  const { open, products } = $props<{ open: boolean, products: Product[] }>(); // Use $props to define the open and products props
+  // export let products: Product[];
 
   function toggleCart() {
     cartOpen.update(open => !open);

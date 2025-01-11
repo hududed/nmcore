@@ -20,6 +20,11 @@
 
   let { children }: Props = $props();
   let products = $state<Product[]>([]);
+  let open = $state<boolean>(false); // Define open state
+
+  $effect(() => {
+    open = $cartOpen;
+  });
 
   onMount(async () => {
     const res = await fetch('/api/products');
@@ -37,7 +42,7 @@
     </div>
   </main>
 
-  <Cart {products} bind:open={$cartOpen} />
+  <Cart {products} {open} />
 
   <Footer />
 </div>

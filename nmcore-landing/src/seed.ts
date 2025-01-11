@@ -15,17 +15,17 @@ const db = getFirestore();
 const products = [
   {
     id: "nm_bloom_household",
-    brand: "NMCore",
+    brand: "NMCORE",
     category: "Household",
-    desc: "Bloom is an organic advanced nanotechnology foliar spray that helps plants struggling in low-light environments.",
+    desc: "Boost low-light plant growth and yield with our carbon quantum dot technology, enhancing photosynthesis across UV, VIS, and IR spectrums.",
     discountPercentage: 0,
 
     // Top-level images for universal display
     images: [
-      { cloudinaryId: "cld-sample-2", width: 1920, height: 1080 },
-      { cloudinaryId: "cld-sample-3", width: 1920, height: 1080 },
-      { cloudinaryId: "cld-sample-4", width: 1920, height: 1080 },
-      { cloudinaryId: "cld-sample-5", width: 1920, height: 1080 },
+      { cloudinaryId: "bloom-refill-1", width: 1920, height: 1080 },
+      { cloudinaryId: "bloom-starter-kit-1", width: 1920, height: 1080 },
+      { cloudinaryId: "tomatoes-thumbnail", width: 1920, height: 1080 },
+      { cloudinaryId: "nmcore-landing-banner-1", width: 1920, height: 1080 },
     ],
 
     meta: {
@@ -41,7 +41,7 @@ const products = [
     productSizes: [
       {
         code: "refill",
-        mainImage: { cloudinaryId: "cld-sample-2", width: 1080, height: 1920 },
+        mainImage: { cloudinaryId: "bloom-refill-1", width: 1080, height: 1920 },
         availabilityStatus: "In Stock",
         dimensions: { depth: 5, height: 20, width: 10 },
         price: 2799, // in cents
@@ -53,7 +53,7 @@ const products = [
       },
       {
         code: "starter_kit",
-        mainImage: { cloudinaryId: "cld-sample-3", width: 1080, height: 1920 },
+        mainImage: { cloudinaryId: "bloom-starter-kit-1", width: 1080, height: 1920 },
         availabilityStatus: "In Stock",
         dimensions: { depth: 6, height: 24, width: 12 },
         price: 3999, // in cents
@@ -69,8 +69,8 @@ const products = [
     returnPolicy: "30-day return policy",
     reviews: [] as any[],
     shippingInformation: "Ships in 3-5 business days",
-    tags: ["organic", "nanotechnology", "foliar spray"],
-    thumbnail: "https://example.com/thumbnail.jpg",
+    tags: ["carbon quantum dot technology, photosynthesis, low-light plant growth, nanotechnology, agriculture, crop health, yield improvement"],
+    thumbnail: "https://res.cloudinary.com/nmcore/image/upload/v1736218233/bloom-starter-kit-1.png",
     title: "BLOOM",
     warrantyInformation: "1 year warranty"
   }

@@ -29,7 +29,9 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </Button>
-      <img src="/images/nmcore_logo.jpg" alt="NMCore BLOOM Logo" class="w-36 lg:w-48" />
+      <a href="/" onclick={() => navigateTo('/')}>
+        <img src="/images/nmcore_logo.jpg" alt="NMCore BLOOM Logo" class="w-36 lg:w-48" />
+      </a>
     </div>
     <div class="hidden md:flex space-x-4 text-sm lg:text-base">
       <a href="/products/nm_bloom_household" class="text-gray-700 hover:text-gray-900">SHOP</a>

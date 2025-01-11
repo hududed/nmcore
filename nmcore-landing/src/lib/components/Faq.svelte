@@ -6,14 +6,13 @@
   <div class="mx-auto flex flex-col">
     <div class="grow">
       <div class="flex flex-col">
-        <Accordion.Root class="w-full">
+        <Accordion.Root type="single" class="w-full">
           <Accordion.Item value="q-1">
             <Accordion.Trigger class="text-lg font-semibold text-left">
               What is BLOOM?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              BLOOM is a revolutionary photosynthesis enhancer that helps your plants thrive, especially in low-light conditions. Think of it as a personal trainer for your plant babies, boosting their photosynthesis game up to 3X!
-              Made with cutting-edge nanotechnology, BLOOM mimics chlorophyll, blending naturally into your plants’ chloroplasts to optimize their energy production.
+              BLOOM is a groundbreaking photosynthesis enhancer that helps your plants thrive, no matter where they grow. It promotes low-light growth for houseplants and increases yield by up to 30% in outdoor gardens. BLOOM is your secret weapon for greener, healthier plants!
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-2">
@@ -21,8 +20,11 @@
               What do you use BLOOM for?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              BLOOM is perfect for giving struggling plants the energy boost they need. Whether your fiddle leaf fig is pouting in a dim corner or your pothos is slacking on the trailing, BLOOM has their back.
-              Spray it on the leaves, and watch them perk up like they’ve just had their morning coffee. BLOOM helps them absorb more light, so even those shadowy spots become a green haven.
+              BLOOM is perfect for: 
+              <ul class="list-disc list-inside">
+                <li><strong>Indoor plants:</strong> Struggling in dim corners? BLOOM helps houseplants absorb more light and grow lush even in low-light spaces.</li>
+                <li><strong>Outdoor gardens:</strong> Need bigger yields? BLOOM optimizes photosynthesis, increasing your harvest without extra effort.</li>
+              </ul>
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-3">
@@ -30,8 +32,7 @@
               How does BLOOM work?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              BLOOM is packed with a biocompatible organic compound that supercharges the natural process of photosynthesis. It enhances photon absorption and electron transfer—basically turning your plant into a low-light superstar.
-              Picture this: your plants are running on battery mode. BLOOM is the fast charger that keeps them powered up and glowing.
+              BLOOM uses a biocompatible organic compound to supercharge photosynthesis. For houseplants, it enhances light absorption, making dim spaces feel brighter. For gardens, it improves energy efficiency, helping plants channel sunlight into stronger, more productive growth.
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-4">
@@ -39,8 +40,11 @@
               When is BLOOM most effective?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              BLOOM shines (pun intended) in low-light or indoor spaces where sunlight can’t do all the heavy lifting. It’s your secret weapon for winter blues or shaded corners.
-              Consistency is key! Use BLOOM regularly to keep your plants energized and growing strong.
+              <ul class="list-disc list-inside">
+                <li>For <strong>indoor plants</strong>, apply in low-light conditions to maximize effectiveness.</li>
+                <li>For <strong>outdoor gardens</strong>, use early in the morning or late in the evening to avoid strong sunlight after spraying.</li>
+              </ul>
+              Consistency is key! Regular applications keep your plants thriving year-round.
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-5">
@@ -48,7 +52,7 @@
               How often should I use BLOOM?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              For happy, thriving plants, a spritz every 2–3 weeks is just right. For plants that need a little extra TLC, you can use it weekly until they’re back to their best selves.
+              Apply every 2–3 weeks for maintenance. For plants needing extra care (like during winter or slow-growth periods), apply weekly until they bounce back.
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-6">
@@ -56,7 +60,7 @@
               Can BLOOM harm your plants?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              Not at all! BLOOM is designed to be gentle and safe when used as directed. But, as with all things, moderation is key. Don’t overdo it—your plants like balance, too.
+              Not at all when used as directed! Just avoid overspraying and ensure proper application timing to keep your plants happy and healthy.
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-7">
@@ -64,23 +68,31 @@
               Can BLOOM work in direct sunlight?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              BLOOM’s magic works best when applied in the evening or during low-light hours. This gives your plants time to soak up the good stuff without the risk of sunburn.
+              BLOOM works best when applied in low-light conditions for indoor plants or during cooler parts of the day (morning/evening) for outdoor plants. Avoid applying in strong sunlight to prevent leaf stress.
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-8">
             <Accordion.Trigger class="text-lg font-semibold text-left">
-              Can I get BLOOM on my skin?
+              Will BLOOM work on all plants?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              BLOOM is completely safe to handle, but if you prefer to keep your hands clean, a pair of gloves will do the trick.
+              Yes! BLOOM is safe for houseplants, garden vegetables, flowers, and more. If you're unsure, try a small spot test first—your plants will love it!
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-9">
             <Accordion.Trigger class="text-lg font-semibold text-left">
-              Will BLOOM work on all plants?
+              Can I use BLOOM on edible plants?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
-              Most plants love BLOOM, but if you’re nervous about trying it on your green buddies, do a quick spot test first. Think of it like trying a new skincare product—better safe than sorry!
+              Absolutely! BLOOM is safe for edible plants like vegetables and herbs. Just make sure to rinse your produce before consuming.
+            </Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value="q-10">
+            <Accordion.Trigger class="text-lg font-semibold text-left">
+              Does BLOOM leave residue or have a smell?
+            </Accordion.Trigger>
+            <Accordion.Content class="text-base whitespace-pre-line text-left">
+              No sticky residue and no strong odor! BLOOM leaves your plants fresh and clean without any unpleasant surprises.
             </Accordion.Content>
           </Accordion.Item>
         </Accordion.Root>
