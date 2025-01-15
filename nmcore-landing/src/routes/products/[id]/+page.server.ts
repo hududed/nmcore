@@ -1,3 +1,4 @@
+//filepath: /Users/hfox/Developments/nmcore/nmcore-landing/src/routes/products/[id]/+page.server.ts
 import { db } from '$lib/firebase';
 import type { Product } from '$lib/types';
 import { error } from '@sveltejs/kit';

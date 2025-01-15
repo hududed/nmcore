@@ -6,7 +6,6 @@
   "hosting": [
     {
       "target": "staging",
-      "site": "nanogrowtech-staging",
       "public": "build",
       "ignore": [
         "firebase.json",
@@ -15,14 +14,21 @@
       ],
       "rewrites": [
         {
-          "source": "**",
+          "source": "/api/**",
+          "function": "app"
+        },
+        {
+          "source": "/products/**",
+          "function": "app"
+        },
+        {
+          "source": "/**",
           "destination": "/index.html"
         }
       ]
     },
     {
       "target": "production",
-      "site": "nanogrowtech-609bc",
       "public": "build",
       "ignore": [
         "firebase.json",
@@ -31,7 +37,15 @@
       ],
       "rewrites": [
         {
-          "source": "**",
+          "source": "/api/**",
+          "function": "app"
+        },
+        {
+          "source": "/products/**",
+          "function": "app"
+        },
+        {
+          "source": "/**",
           "destination": "/index.html"
         }
       ]

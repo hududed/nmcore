@@ -1,3 +1,4 @@
+//filepath: nmcore-landing/src/routes/%2Bpage.svelte
 <script lang="ts">
   import { goto } from '$app/navigation';
   import Meta from '$lib/components/seo/Meta.svelte';

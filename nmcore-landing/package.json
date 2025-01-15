@@ -3,8 +3,10 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
+		"dev:staging": "NODE_ENV=staging vite dev",
+		"dev:production": "NODE_ENV=production vite dev",
+		"build:staging": "NODE_ENV=staging vite build",
+		"build:production": "NODE_ENV=production vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

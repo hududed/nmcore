@@ -3,6 +3,7 @@
   import Footer from '$lib/components/Footer.svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import { Toaster } from "$lib/components/ui/sonner";
+  import { CLOUDINARY_CLOUD_NAME } from '$lib/secrets';
   import { cartOpen } from '$lib/stores/cartStore';
   import type { Product } from '$lib/types';
   import { onMount } from 'svelte';
@@ -11,7 +12,7 @@
 
   // Set Cloudinary options globally
   configureCloudinary({
-    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+    cloudName: CLOUDINARY_CLOUD_NAME,
   });
 
   interface Props {

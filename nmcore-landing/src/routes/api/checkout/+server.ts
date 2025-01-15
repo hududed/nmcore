@@ -44,8 +44,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     // Use `import.meta.env` for public values
-    const successUrl = `${import.meta.env.VITE_PUBLIC_FRONTEND_URL}/status/checkout/success`;
-    const cancelUrl = `${import.meta.env.VITE_PUBLIC_FRONTEND_URL}/status/checkout/fail`;
+    const successUrl = `${import.meta.env.VITE_FRONTEND_URL}/status/checkout/success`;
+    const cancelUrl = `${import.meta.env.VITE_FRONTEND_URL}/status/checkout/fail`;
 
     const orderId = generateShortOrderId();
 

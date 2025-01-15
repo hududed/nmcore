@@ -1,5 +1,7 @@
+//filepath: /Users/hfox/Developments/nmcore/nmcore-landing/functions/src/stripeWebhook.ts
 import { render } from '@react-email/components';
 import sgMail from "@sendgrid/mail";
+import { getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
@@ -7,6 +9,11 @@ import { createElement } from 'react';
 import Stripe from 'stripe';
 import ConfirmationEmail from "./email/confirmation-email";
 import { EmailData, Item } from './types';
+
+// Ensure Firebase Admin SDK is initialized only once
+if (!getApps().length) {
+  initializeApp();
+}
 
 const stripeSecretKey = defineSecret('STRIPE_SECRET_KEY');
 const stripeWebhookSecret = defineSecret('STRIPE_WEBHOOK_SECRET');

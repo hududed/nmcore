@@ -3,9 +3,9 @@ import sgMail from "@sendgrid/mail";
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
 import { createElement } from 'react';
-import { EmailData, EmailType } from '../../../types'; // Import types
 import ConfirmationEmail from './email/confirmation-email';
 import ShippingNotificationEmail from './email/shipping-notification-email';
+import { EmailData, EmailType } from './types'; // Import types
 
 const sendgridApiKey = defineSecret('SENDGRID_KEY');
 

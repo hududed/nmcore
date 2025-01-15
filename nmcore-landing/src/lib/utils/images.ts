@@ -1,13 +1,8 @@
-import { env } from '$env/dynamic/public';
+//filepath: /nmcore-landing/src/lib/utils/images.ts
+import { PUBLIC_CLOUDINARY_API_KEY, PUBLIC_CLOUDINARY_CLOUD_NAME } from '$env/static/public';
 
-/**
- * Fetch Cloudinary URL for a single image with optional transformations
- * @param {object} image - Cloudinary image object
- * @param {string} image.cloudinaryId - ID of the Cloudinary image
- * @param {object} transformations - Optional Cloudinary transformations
- * @param {function} fetch - Fetch function
- * @returns {Promise<string>} - Signed Cloudinary URL
- */
+console.log('Loaded Public ENV:', { PUBLIC_CLOUDINARY_CLOUD_NAME, PUBLIC_CLOUDINARY_API_KEY });
+
 export async function fetchImageURL(
   image: { cloudinaryId: string },
   transformations: Record<string, string> = {},
@@ -24,6 +19,7 @@ export async function fetchImageURL(
   };
 
   try {
+    console.log('Fetching signature for image:', image.cloudinaryId);
     const response = await fetch('/api/cloudinary', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -31,17 +27,20 @@ export async function fetchImageURL(
     });
 
     if (!response.ok) {
+      console.error('API Response Status:', response.status);
+      console.error('API Response Text:', await response.text());
       throw new Error('Failed to fetch Cloudinary signature');
     }
 
     const { signature } = await response.json();
 
-    // Properly construct the transformation string
     const transformationString = Object.entries(transformations)
       .map(([key, value]) => `${key}_${value}`)
       .join(',');
 
-    return `https://res.cloudinary.com/${env.PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${transformationString ? `${transformationString}/` : ''}${image.cloudinaryId}?signature=${signature}&api_key=${env.PUBLIC_CLOUDINARY_API_KEY}`;
+    const imageUrl = `https://res.cloudinary.com/${PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${transformationString ? `${transformationString}/` : ''}${image.cloudinaryId}?signature=${signature}&api_key=${PUBLIC_CLOUDINARY_API_KEY}`;
+
+    return imageUrl;
   } catch (e) {
     console.error('Error fetching signed Cloudinary URL:', e);
     return '';
