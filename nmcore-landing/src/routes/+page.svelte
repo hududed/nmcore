@@ -15,6 +15,7 @@
 
   function shopNow() {
     // Navigate to the product page dynamically with ID
+    console.log('Navigating to /products/nm_bloom_household');
     goto('/products/nm_bloom_household'); // Replace with dynamic ID if applicable
   }
 </script>

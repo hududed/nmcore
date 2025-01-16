@@ -42,11 +42,12 @@ expressApp.post('/api/cloudinary', async (req, res) => {
 
 // Define /api/products route (get all products)
 expressApp.get('/api/products', async (req, res) => {
-  console.log('GET request received at /api/products');
+  console.log('[DEBUG] Route hit: /api/products');
   try {
     const productsSnapshot = await db.collection('products').get();
-
+    
     if (productsSnapshot.empty) {
+      console.log('[DEBUG] No products found');
       return res.status(404).json({ message: 'No products found' });
     }
 
@@ -54,10 +55,12 @@ expressApp.get('/api/products', async (req, res) => {
       id: doc.id,
       ...doc.data(),
     }));
+    console.log('[DEBUG] Products fetched:', products);
+
 
     return res.status(200).json(products);
   } catch (err) {
-    console.error('Error fetching products:', err);
+    console.error('[DEBUG] Error fetching products:', err);
     return res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
