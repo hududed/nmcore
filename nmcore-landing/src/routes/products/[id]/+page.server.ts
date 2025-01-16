@@ -1,40 +1,48 @@
 //filepath: /Users/hfox/Developments/nmcore/nmcore-landing/src/routes/products/[id]/+page.server.ts
-import { db } from '$lib/firebase';
+import { adminDb } from '$lib/firebase-admin';
 import type { Product } from '$lib/types';
 import { error } from '@sveltejs/kit';
-import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export async function load({ params }: { params: { id: string } }) {
-  const { id } = params;
+  console.log('Received product ID:', params.id);
 
-  if (!id) {
-    throw error(400, 'Product ID is missing from the URL');
+  try {
+    const { id } = params;
+    if (!id) {
+      console.error('No product ID in params');
+      throw error(400, 'Product ID is missing from the URL');
+    }
+    // Use Firestore Admin SDK methods
+    const productSnapshot = await adminDb.collection('products').where('id', '==', id).get();
+
+    if (productSnapshot.empty) {
+      console.error(`Product not found for ID: ${id}`);
+      throw error(404, `Product not found for ID: ${id}`);
+    }
+
+    console.log('Firestore snapshot:', productSnapshot.docs.map((doc) => doc.data()));
+
+    const productDoc = productSnapshot.docs[0];
+    const product = productDoc.data() as Product;
+
+    console.log('Fetched product data:', product);
+
+    return {
+      product: {
+        ...product,
+        images: product.images.map((img) => ({
+          cloudinaryId: img.cloudinaryId, // Keep it simple
+        })),
+        productSizes: product.productSizes.map((size) => ({
+          ...size,
+          mainImage: {
+            cloudinaryId: size.mainImage.cloudinaryId, // Ensure this is passed as-is
+          },
+        })),
+      },
+    };
+  } catch (err) {
+    console.error('Error in +page.server.ts load function:', err);
+    throw error(500, 'Internal Server Error');
   }
-
-  const productsCollection = collection(db, 'products');
-  const productQuery = query(productsCollection, where('id', '==', id));
-  const productSnapshot = await getDocs(productQuery);
-
-  if (productSnapshot.empty) {
-    throw error(404, `Product not found for ID: ${id}`);
-  }
-
-  const productDoc = productSnapshot.docs[0];
-  const product = productDoc.data() as Product;
-
-  // No need for fetchImageURL; pass plain cloudinaryId
-  return {
-    product: {
-      ...product,
-      images: product.images.map((img) => ({
-        cloudinaryId: img.cloudinaryId, // Keep it simple
-      })),
-      productSizes: product.productSizes.map((size) => ({
-        ...size,
-        mainImage: {
-          cloudinaryId: size.mainImage.cloudinaryId, // Ensure this is passed as-is
-        },
-      })),
-    },
-  };
 }

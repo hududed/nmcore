@@ -8,6 +8,9 @@
       "hosting": {
         "staging": [
           "nanogrowtech-staging"
+        ],
+        "production": [
+          "nanogrowtech-609bc"
         ]
       }
     },

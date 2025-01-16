@@ -1,7 +1,27 @@
 import type { ServiceAccount } from 'firebase-admin/app';
 import { cert, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import serviceAccount from '../serviceAccountKey.json';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get the directory name in ES module scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Determine the correct service account key file based on the environment
+const isEmulator = process.env.FIRESTORE_EMULATOR === 'true';
+const serviceAccountFile = isEmulator
+  ? '../serviceAccountKey.staging.json' // Use the staging service account for the emulator
+  : '../serviceAccountKey.json'; // Use the production service account otherwise
+
+// Ensure the file exists
+if (!fs.existsSync(path.resolve(__dirname, serviceAccountFile))) {
+  throw new Error(`Service account key file not found: ${serviceAccountFile}`);
+}
+
+// Import the service account key
+const serviceAccount = JSON.parse(fs.readFileSync(path.resolve(__dirname, serviceAccountFile), 'utf8'));
 
 // Initialize Admin SDK using the service account JSON
 initializeApp({
@@ -9,6 +29,15 @@ initializeApp({
 });
 
 const db = getFirestore();
+
+// Connect to the Firestore emulator if running locally
+if (isEmulator) {
+  db.settings({
+    host: '127.0.0.1:8080',
+    ssl: false,
+  });
+  console.log('Connected to Firestore emulator.');
+}
 
 // 3. Define your product data
 // Define product data
