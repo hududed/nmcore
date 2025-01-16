@@ -1,4 +1,5 @@
 <script lang="ts">
+  // filepath: nmcore-landing/src/routes/%2Blayout.svelte
   import Cart from '$lib/components/Cart.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import Navbar from '$lib/components/Navbar.svelte';

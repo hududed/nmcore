@@ -1,4 +1,5 @@
 <script lang="ts">
+  // filepath: nmcore-landing/src/routes/products/%5Bid%5D/%2Bpage.svelte
   import Carousel from '$lib/components/Carousel.svelte';
   import ProductDetails from '$lib/components/ProductDetails.svelte';
   import Meta from '$lib/components/seo/Meta.svelte';
