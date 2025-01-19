@@ -1,18 +1,19 @@
 {
 	"name": "nmcore-landing",
-	"version": "0.0.1",
+	"version": "0.1.1",
 	"private": true,
 	"scripts": {
-		"dev:staging": "NODE_ENV=staging vite dev",
-		"dev:production": "NODE_ENV=production vite dev",
-		"build:staging": "NODE_ENV=staging vite build",
-		"build:production": "NODE_ENV=production vite build",
+		"build:staging": "cross-env NODE_ENV=staging vite build",
+		"build:production": "cross-env NODE_ENV=production vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"seed": "tsx src/seed.ts",
-		"build:all": "npm run build:staging && cd functions && npm run build:functions && cd ..",
-		"emulate": "npm run build:all && firebase emulators:start"
+		"build:all": "cross-env NODE_ENV=$NODE_ENV vite build && cd functions && npm run build:functions && cd ..",
+		"emulate": "cross-env NODE_ENV=development npm run build:all && firebase emulators:start",
+		"deploy:staging": "cross-env NODE_ENV=staging npm run build:all && firebase deploy",
+		"deploy:production": "cross-env NODE_ENV=production npm run build:all && firebase deploy",
+		"release": "standard-version"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.26.4",
@@ -29,6 +30,7 @@
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^1.0.0-next.65",
 		"clsx": "^2.1.1",
+		"cross-env": "^7.0.3",
 		"daisyui": "^4.12.13",
 		"embla-carousel-svelte": "^8.5.1",
 		"formsnap": "^2.0.0-next.1",
@@ -36,6 +38,7 @@
 		"mode-watcher": "^0.4.1",
 		"phosphor-svelte": "^3.0.0",
 		"postcss": "^8.4.47",
+		"standard-version": "^9.5.0",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"svelte-sonner": "^0.3.28",
