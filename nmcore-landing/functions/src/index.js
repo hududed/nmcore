@@ -1,12 +1,19 @@
-//filepath: /functions/src/index.ts
+//filepath: /functions/src/index.js
+import { installPolyfills } from '@sveltejs/kit/node/polyfills';
 import cors from 'cors';
 import express from 'express';
 import { getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
-import { createCloudinaryHandler } from './api-handlers/cloudinary';
-import { stripeWebhook } from './stripeWebhook';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import { Server } from '../server/index.js';
+import { manifest, prerendered } from '../server/manifest.js';
+import { createCloudinaryHandler } from './api-handlers/cloudinary.js';
+import { stripeWebhookHandler } from './stripeWebhookHandler.js';
+
+installPolyfills();
 
 // Initialize Firebase Admin SDK
 if (!getApps().length) {
@@ -19,10 +26,75 @@ const CLOUDINARY_API_SECRET = defineSecret('CLOUDINARY_API_SECRET');
 const CLOUDINARY_API_KEY = defineSecret('CLOUDINARY_API_KEY');
 const CLOUDINARY_CLOUD_NAME = defineSecret('CLOUDINARY_CLOUD_NAME');
 
+// Define Stripe secrets
+const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
+const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
+const SENDGRID_API_KEY = defineSecret('SENDGRID_KEY');
+
+// Helper function to convert Express request to SvelteKit request
+function toSvelteKitRequest(request) {
+  const protocol = request.headers['x-forwarded-proto'] || 'http';
+  const host = `${protocol}://${request.headers['x-forwarded-host']}`;
+  const { href } = new URL(request.url || '', host);
+  return new Request(href, {
+    method: request.method,
+    headers: toSvelteKitHeaders(request.headers),
+    body: request.rawBody ? request.rawBody : null,
+  });
+}
+
+// Helper function to convert headers
+function toSvelteKitHeaders(headers) {
+  const finalHeaders = {};
+
+  for (const [key, value] of Object.entries(headers)) {
+    if (value) {
+      finalHeaders[key] = Array.isArray(value) ? value.join(',') : value;
+    }
+  }
+
+  return new Headers(finalHeaders);
+}
+
+// Middleware to handle SvelteKit requests
+async function handleSvelteKitRequest(req, res, next) {
+  if (prerendered.has(req.url)) {
+    return next();
+  }
+
+  const server = new Server(manifest);
+  await server.init({ env: process.env });
+
+  const sveltekitRequest = toSvelteKitRequest(req);
+  const rendered = await server.respond(sveltekitRequest);
+
+  if (!rendered) {
+    return res.writeHead(404, 'Not Found').end();
+  }
+
+  /** @type {ArrayBuffer} */
+  const body = await rendered.arrayBuffer();
+  return res
+    .writeHead(rendered.status, Object.fromEntries(rendered.headers))
+    .end(Buffer.from(body));
+}
+
 // Create an Express app
 const expressApp = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log('filename:', __filename);
+console.log('dirname:', __dirname);
+
 expressApp.use(cors({ origin: true }));
 expressApp.use(express.json()); // Parse JSON body
+
+// Serve pre-rendered HTML files
+expressApp.use(express.static(join(__dirname, '../prerendered')));
+
+// Serve client-side assets
+expressApp.use(express.static(join(__dirname, '../client')));
 
 // Define /api/cloudinary route
 expressApp.post('/api/cloudinary', async (req, res) => {
@@ -57,7 +129,6 @@ expressApp.get('/api/products', async (req, res) => {
     }));
     console.log('[DEBUG] Products fetched:', products);
 
-
     return res.status(200).json(products);
   } catch (err) {
     console.error('[DEBUG] Error fetching products:', err);
@@ -87,10 +158,10 @@ expressApp.get('/api/products/:id', async (req, res) => {
     return res.status(200).json({
       product: {
         ...product,
-        images: product.images.map((img: any) => ({
+        images: product.images.map((img) => ({
           cloudinaryId: img.cloudinaryId,
         })),
-        productSizes: product.productSizes.map((size: any) => ({
+        productSizes: product.productSizes.map((size) => ({
           ...size,
           mainImage: {
             cloudinaryId: size.mainImage.cloudinaryId,
@@ -104,6 +175,12 @@ expressApp.get('/api/products/:id', async (req, res) => {
   }
 });
 
+// Define /api/stripe-webhook route
+expressApp.post('/api/stripe-webhook', stripeWebhookHandler);
+
+// Handle all other routes with SvelteKit
+expressApp.use(handleSvelteKitRequest);
+
 // Export the Express app as a Cloud Function
 export const app = onRequest(
   {
@@ -111,10 +188,11 @@ export const app = onRequest(
       CLOUDINARY_API_SECRET,
       CLOUDINARY_API_KEY,
       CLOUDINARY_CLOUD_NAME,
+      STRIPE_SECRET_KEY,
+      STRIPE_WEBHOOK_SECRET,
+      SENDGRID_API_KEY,
     ],
+    region: 'us-central1'
   },
   expressApp
 );
-
-// Export stripeWebhook as its own Cloud Function
-export { stripeWebhook };

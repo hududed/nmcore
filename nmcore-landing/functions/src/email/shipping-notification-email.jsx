@@ -1,4 +1,3 @@
-// functions/src/email/confirmation-email.tsx
 import {
   Body,
   Container,
@@ -12,22 +11,18 @@ import {
 import { Tailwind } from '@react-email/tailwind';
 import * as React from 'react';
 
-interface ConfirmationEmailProps {
-  name: string;
-  orderId: string;
-}
 
-export const ConfirmationEmail = ({ name, orderId }: ConfirmationEmailProps) => {
+export const ShippingNotificationEmail = ({ name, orderId }) => {
   return (
     <Html>
       <Head />
-      <Preview>Order Confirmation</Preview>
+      <Preview>Shipping Notification</Preview>
       <Tailwind>
         <Body className="bg-white my-auto mx-auto font-sans px-2">
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
-            <Text className="text-black text-[14px] leading-[24px]">Thank you {name} for your purchase!</Text>
+            <Text className="text-black text-[14px] leading-[24px]">Hello {name},</Text>
             <Text className="text-black text-[14px] leading-[24px]">
-              Your order is being processed. Your order ID is {orderId}.
+              Your order with ID {orderId} has been shipped.
             </Text>
             <Text className="text-black text-[14px] leading-[24px]">
               For inquiries, reach us at{' '}
@@ -46,4 +41,4 @@ export const ConfirmationEmail = ({ name, orderId }: ConfirmationEmailProps) => 
   );
 };
 
-export default ConfirmationEmail;
+export default ShippingNotificationEmail;

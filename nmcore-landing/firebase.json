@@ -3,62 +3,20 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "hosting": [
-    {
-      "target": "staging",
-      "public": "build",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "/api/**",
-          "function": "app"
-        },
-        {
-          "source": "/products/**",
-          "destination": "/index.html"
-        },
-        {
-          "source": "/__data.json",
-          "destination": "/__data.json"
-        },
-        {
-          "source": "/**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "target": "production",
-      "public": "build",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "/api/**",
-          "function": "app"
-        },
-        {
-          "source": "/products/**",
-          "destination": "/index.html"
-        },
-        {
-          "source": "/__data.json",
-          "destination": "/__data.json"
-        },
-        {
-          "source": "/**",
-          "destination": "/index.html"
-        }
-      ]
-    }
-  ],
+  "hosting": {
+    "public": "functions/build/client",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "app"
+      }
+    ]
+  },
   "functions": [
     {
       "source": "functions",
@@ -70,9 +28,6 @@
         "firebase-debug.*.log",
         "*.local",
         "sendEmail.ts"
-      ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run build"
       ]
     }
   ],
@@ -82,6 +37,9 @@
     },
     "hosting": {
       "port": 5000
+    },
+    "firestore": {
+      "port": 8080
     }
   }
 }

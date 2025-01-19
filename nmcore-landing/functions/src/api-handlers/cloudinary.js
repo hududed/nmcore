@@ -1,14 +1,9 @@
 //file: nmcore-landing/functions/src/api-handlers/cloudinary.ts
-import { Request, Response } from 'express';
-import { configureCloudinary, signCloudinaryRequest } from '../shared/cloudinary';
+import { configureCloudinary, signCloudinaryRequest } from '../shared/cloudinary.js';
 
 // Factory function to create Cloudinary handlers
-export const createCloudinaryHandler = (config: {
-  cloudName: string;
-  apiKey: string;
-  apiSecret: string;
-}) => {
-  return async (req: Request, res: Response) => {
+export const createCloudinaryHandler = (config) => {
+  return async (req, res) => {
     try {
       const { paramsToSign } = req.body;
 

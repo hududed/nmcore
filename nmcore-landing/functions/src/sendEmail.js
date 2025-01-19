@@ -3,9 +3,8 @@ import sgMail from "@sendgrid/mail";
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
 import { createElement } from 'react';
-import ConfirmationEmail from './email/confirmation-email';
-import ShippingNotificationEmail from './email/shipping-notification-email';
-import { EmailData, EmailType } from './types'; // Import types
+import ConfirmationEmail from './email/confirmation-email.js';
+import ShippingNotificationEmail from './email/shipping-notification-email.js';
 
 const sendgridApiKey = defineSecret('SENDGRID_KEY');
 
@@ -15,7 +14,7 @@ const emailTemplates = {
   // Add other email templates here
 };
 
-const sendEmailInternal = async (emailType: EmailType, emailData: EmailData) => {
+const sendEmailInternal = async (emailType, emailData) => {
   sgMail.setApiKey(sendgridApiKey.value());
 
   const EmailComponent = emailTemplates[emailType];
@@ -43,7 +42,7 @@ const sendEmailInternal = async (emailType: EmailType, emailData: EmailData) => 
 };
 
 export const sendEmail = onRequest({ secrets: [sendgridApiKey], cors: true }, async (req, res) => {
-  const { emailType, emailData }: { emailType: EmailType, emailData: EmailData } = req.body;
+  const { emailType, emailData } = req.body;
 
   try {
     await sendEmailInternal(emailType, emailData);
@@ -53,7 +52,7 @@ export const sendEmail = onRequest({ secrets: [sendgridApiKey], cors: true }, as
   }
 });
 
-function getSubject(emailType: EmailType): string {
+function getSubject(emailType) {
   switch (emailType) {
     case 'confirmation':
       return 'Order Confirmation';

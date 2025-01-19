@@ -1,21 +1,17 @@
 import {
-  Body,
-  Container,
-  Head,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Text
+    Body,
+    Container,
+    Head,
+    Hr,
+    Html,
+    Link,
+    Preview,
+    Text
 } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import * as React from 'react';
 
-interface CollaborationProps {
-  fullName: string;
-}
-
-export const InviteCollaboration = ({ fullName }: CollaborationProps) => {
+export const InviteCollaboration = ({ fullName }) => {
   return (
       <Html>
         <Head />

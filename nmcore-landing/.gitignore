@@ -22,3 +22,5 @@ vite.config.ts.timestamp-*
 
 serviceAccountKey*
 cors.json
+
+functions/build

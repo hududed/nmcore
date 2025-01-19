@@ -12,18 +12,17 @@ export default defineConfig({
     define: {
         'process.env': process.env, // Ensure environment variables are included in the build
     },
-    server: {
-        proxy: {
-            '/api': {
-                target: 'http://127.0.0.1:5001', // Firebase Functions emulator
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '/nmcore-landing/us-central1/app') // Replace this with your function's URL structure
-            }
-        }
-    },
-    build: {
-        rollupOptions: {
-            external: ['firebase-functions'], // Exclude firebase-functions from the client-side bundle
-        },
-    },
+    // build: {
+    //     rollupOptions: {
+    //         input: {
+    //             main: resolve(__dirname, 'functions/src/index.js'),
+    //             cloudinary: resolve(__dirname, 'functions/src/api-handlers/cloudinary.js'),
+    //             stripeWebhookHandler: resolve(__dirname, 'functions/src/stripeWebhookHandler.js')
+    //         },
+    //         output: {
+    //             dir: resolve(__dirname, 'functions/build'),
+    //             format: 'esm'
+    //         }
+    //     }
+    // }
 });

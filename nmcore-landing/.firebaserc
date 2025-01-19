@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "nanogrowtech-609bc",
+    "default": "nanogrowtech-staging",
     "staging": "nanogrowtech-staging"
   },
   "targets": {

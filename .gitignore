@@ -32,3 +32,5 @@ app
 
 # Ignore service account key
 config/serviceAccountKey.json
+
+package-lock.json
