@@ -59,6 +59,7 @@ function toSvelteKitHeaders(headers) {
 // Middleware to handle SvelteKit requests
 async function handleSvelteKitRequest(req, res, next) {
   if (prerendered.has(req.url)) {
+    console.log(`Prerendered route found for ${req.url}`);
     return next();
   }
 
@@ -127,7 +128,7 @@ expressApp.get('/api/products', async (req, res) => {
       id: doc.id,
       ...doc.data(),
     }));
-    console.log('[DEBUG] Products fetched:', products);
+    // console.log('[DEBUG] Products fetched:', products);
 
     return res.status(200).json(products);
   } catch (err) {

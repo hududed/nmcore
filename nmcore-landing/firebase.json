@@ -12,6 +12,14 @@
     ],
     "rewrites": [
       {
+        "source": "/status/checkout/success",
+        "destination": "/status/checkout/success.html"
+      },
+      {
+        "source": "/status/checkout/fail",
+        "destination": "/status/checkout/fail.html"
+      },
+      {
         "source": "**",
         "function": "app"
       }

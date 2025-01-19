@@ -1,3 +1,4 @@
+// filepath: /nmc-core-landing/src/routes/api/checkout/%2Bserver.ts
 import type { Item, RequestBody } from '$lib/types';
 import { generateShortOrderId } from '$lib/utils/checkout';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -41,11 +42,11 @@ export const POST: RequestHandler = async ({ request }) => {
   console.log('POST request received at /api/checkout');
   const { items }: RequestBody = await request.json();
   console.log('Items:', items);
-
+  
   try {
-    // Use `import.meta.env` for public values
-    const successUrl = `${import.meta.env.VITE_FRONTEND_URL}/status/checkout/success`;
-    const cancelUrl = `${import.meta.env.VITE_FRONTEND_URL}/status/checkout/fail`;
+    const frontendUrl = import.meta.env.VITE_FRONTEND_URL.replace(/\/+$/, ''); // Remove trailing slash if any
+    const successUrl = `${frontendUrl}/status/checkout/success`;
+    const cancelUrl = `${frontendUrl}/status/checkout/fail`;
 
     const orderId = generateShortOrderId();
 

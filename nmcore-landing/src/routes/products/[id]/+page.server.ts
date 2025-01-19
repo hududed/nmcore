@@ -12,7 +12,6 @@ export async function load({ params }: { params: { id: string } }) {
       console.error('No product ID in params');
       throw error(400, 'Product ID is missing from the URL');
     }
-    // Use Firestore Admin SDK methods
     const productSnapshot = await adminDb.collection('products').where('id', '==', id).get();
 
     if (productSnapshot.empty) {
@@ -20,12 +19,8 @@ export async function load({ params }: { params: { id: string } }) {
       throw error(404, `Product not found for ID: ${id}`);
     }
 
-    console.log('Firestore snapshot:', productSnapshot.docs.map((doc) => doc.data()));
-
     const productDoc = productSnapshot.docs[0];
     const product = productDoc.data() as Product;
-
-    console.log('Fetched product data:', product);
 
     return {
       product: {
