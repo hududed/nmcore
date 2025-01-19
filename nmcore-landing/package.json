@@ -1,6 +1,6 @@
 {
 	"name": "nmcore-landing",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"private": true,
 	"scripts": {
 		"copy:prerendered": "copyfiles -u 5 functions/build/prerendered/status/checkout/** functions/build/client/status/checkout/",
