@@ -1,16 +1,16 @@
 //filepath: /nmc-core-landing/src/lib/firebase-admin.ts
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { readFileSync } from 'fs';
 
-// Load service account key file
-const serviceAccountKeyPath = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH;
+// Load service account key from environment variable
+const serviceAccountKeyBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64;
 
-if (!serviceAccountKeyPath) {
-  throw new Error('Missing FIREBASE_SERVICE_ACCOUNT_KEY_PATH environment variable');
+if (!serviceAccountKeyBase64) {
+  throw new Error('Missing FIREBASE_SERVICE_ACCOUNT_KEY_BASE64 environment variable');
 }
 
-const serviceAccount = JSON.parse(readFileSync(serviceAccountKeyPath, 'utf8'));
+const serviceAccountKey = Buffer.from(serviceAccountKeyBase64, 'base64').toString('utf8');
+const serviceAccount = JSON.parse(serviceAccountKey);
 
 // Initialize Firebase Admin SDK
 if (!getApps().length) {

@@ -2,14 +2,15 @@
 import { error, json } from '@sveltejs/kit';
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { readFileSync } from 'fs';
 
-// Initialize Firebase Admin SDK with a service account
-const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH;
-if (!serviceAccountPath) {
-  throw error(500, 'Missing FIREBASE_SERVICE_ACCOUNT_KEY_PATH in environment variables');
+// Use `process.env` for secrets
+const serviceAccountKeyBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64;
+if (!serviceAccountKeyBase64) {
+  throw error(500, 'Missing FIREBASE_SERVICE_ACCOUNT_KEY_BASE64 environment variable');
 }
-const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
+
+const serviceAccountKey = Buffer.from(serviceAccountKeyBase64, 'base64').toString('utf8');
+const serviceAccount = JSON.parse(serviceAccountKey);
 
 if (!getApps().length) {
   initializeApp({
