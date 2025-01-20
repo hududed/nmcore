@@ -1,4 +1,4 @@
-//filepath: nmc-core-landing/vite.config.ts
+//filepath: nmcore-landing/vite.config.ts
 import { sveltekit } from '@sveltejs/kit/vite';
 import dotenv from 'dotenv';
 import { defineConfig } from 'vite';

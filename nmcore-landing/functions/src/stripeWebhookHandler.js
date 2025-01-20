@@ -1,41 +1,57 @@
-//filepath: /Users/hfox/Developments/nmcore/nmcore-landing/functions/src/stripeWebhook.js
+//filepath: /Users/hfox/Developments/nmcore/nmcore-landing/functions/src/stripeWebhookHandler.js
 import { render } from '@react-email/components';
 import sgMail from "@sendgrid/mail";
-import { getApps, initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { defineSecret } from 'firebase-functions/params';
 import { createElement } from 'react';
 import Stripe from 'stripe';
 import ConfirmationEmail from "./email/confirmation-email.js";
+import { db } from './firestore.js';
 
-// Ensure Firebase Admin SDK is initialized only once
-if (!getApps().length) {
-  initializeApp();
+// Define secrets
+const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
+const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
+const SENDGRID_API_KEY = defineSecret('SENDGRID_KEY');
+
+// Initialize variables to cache secrets
+let stripeInstance;
+let stripeWebhookSecretValue;
+let sendgridApiKeyValue;
+
+async function initializeSecrets() {
+  if (!stripeInstance) {
+    try {
+      const stripeSecretKey = await STRIPE_SECRET_KEY.value();
+      stripeWebhookSecretValue = await STRIPE_WEBHOOK_SECRET.value();
+      sendgridApiKeyValue = await SENDGRID_API_KEY.value();
+
+      stripeInstance = new Stripe(stripeSecretKey, {
+        apiVersion: '2024-12-18.acacia',
+      });
+
+      sgMail.setApiKey(sendgridApiKeyValue);
+      console.log('Secrets initialized successfully');
+    } catch (error) {
+      console.error('Error initializing secrets:', error);
+      throw error;
+    }
+  }
 }
 
-const db = getFirestore();
-
-export async function stripeWebhookHandler(req, res, secrets) {
-  const { stripeSecretKey, stripeWebhookSecret, sendgridApiKey } = secrets;
-
-  // Initialize Stripe
-  const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2024-12-18.acacia',
-  });
-
-  // Initialize SendGrid
-  sgMail.setApiKey(sendgridApiKey);
-  const sig = req.headers['stripe-signature'] ?? '';
-
+export async function stripeWebhookHandler(req, res) {
   try {
-    // Use req.rawBody directly
-    const event = stripe.webhooks.constructEvent(req.rawBody, sig, stripeWebhookSecret);
+    await initializeSecrets();
+
+    const sig = req.headers['stripe-signature'] || '';
+    const event = stripeInstance.webhooks.constructEvent(req.body, sig, stripeWebhookSecretValue);
+
+    console.log(`Received event: ${event.type}`);
 
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object; 
+        const session = event.data.object;
 
         // Retrieve session with expanded customer details
-        const sessionWithCustomer = await stripe.checkout.sessions.retrieve(session.id, {
+        const sessionWithCustomer = await stripeInstance.checkout.sessions.retrieve(session.id, {
           expand: ['customer'],
         });
 
@@ -58,7 +74,13 @@ export async function stripeWebhookHandler(req, res, secrets) {
         };
 
         // Store customer data in Firestore
-        await db.collection('customers').doc(sessionWithCustomer.id).set(customerInfo);
+        try {
+          console.log('Storing customer data in Firestore:', customerInfo);
+          await db.collection('customers').doc(sessionWithCustomer.id).set(customerInfo);
+          console.log('Customer data stored successfully');
+        } catch (error) {
+          console.error('Error storing customer data in Firestore:', error);
+        }
 
         // Parse items from metadata
         const items = sessionWithCustomer.metadata?.items
@@ -66,7 +88,7 @@ export async function stripeWebhookHandler(req, res, secrets) {
           : [];
         console.log('Items:', items);
 
-        // 2. Prepare a Firestore batch
+        // Prepare a Firestore batch
         const batch = db.batch();
 
         for (const item of items) {
@@ -74,7 +96,7 @@ export async function stripeWebhookHandler(req, res, secrets) {
             `Processing item: ${item.name}, stripePriceId: ${item.stripePriceId}, quantity: ${item.quantity}`
           );
 
-          // 1. Query for the doc that contains stripePriceId
+          // Query for the doc that contains stripePriceId
           const productQuerySnapshot = await db.collection('products')
             .where('stripePriceIds', 'array-contains', item.stripePriceId)
             .get();
@@ -87,14 +109,14 @@ export async function stripeWebhookHandler(req, res, secrets) {
           const productDoc = productQuerySnapshot.docs[0];
           const productData = productDoc.data();
 
-          // 2. Ensure productSizes is an array
+          // Ensure productSizes is an array
           let productSizes = productData.productSizes;
           if (!Array.isArray(productSizes)) {
             console.error(`productSizes is not an array in doc: ${productDoc.id}`);
             continue;
           }
 
-          // 3. Find the matching index
+          // Find the matching index
           const sizeIndex = productSizes.findIndex(
             (size) => size.stripePriceId === item.stripePriceId
           );
@@ -104,47 +126,54 @@ export async function stripeWebhookHandler(req, res, secrets) {
             continue;
           }
 
-          // 4. Calculate the new stock
+          // Calculate the new stock
           const currentStock = productSizes[sizeIndex].stock;
           const newStock = currentStock - item.quantity;
           console.log(`Updating stock for ${productDoc.id} / sizeIndex ${sizeIndex} from ${currentStock} to ${newStock}`);
 
-          // 5. Mutate the array in memory
+          // Mutate the array in memory
           productSizes[sizeIndex].stock = newStock;
           productSizes[sizeIndex].availabilityStatus =
             newStock > 0 ? 'In Stock' : 'Sold Out';
 
-          // 6. Write the entire array back (ensuring it’s still an array)
+          // Write the entire array back
           batch.update(productDoc.ref, {
             productSizes: productSizes
           });
         }
 
-        // 7. Commit
-        await batch.commit();
-        console.log('Updated stock by rewriting productSizes arrays');
+        // Commit the batch
+        try {
+          console.log('Committing Firestore batch to update product stocks');
+          await batch.commit();
+          console.log('Updated stock by rewriting productSizes arrays');
+        } catch (error) {
+          console.error('Error committing Firestore batch:', error);
+        }
 
         // Render the confirmation email template
-        const emailHtml = await render(
-          createElement(ConfirmationEmail, {
-            name: customerInfo.name,
-            orderId: customerInfo.orderId,
-          })
-        );
-
-        // Send the confirmation email
-        const msg = {
-          to: customerInfo.email,
-          from: "Hud Wahab <hud@nmcore.com>",
-          subject: 'Order Confirmation',
-          html: emailHtml,
-        };
-
         try {
+          console.log('Rendering confirmation email template');
+          const emailHtml = await render(
+            createElement(ConfirmationEmail, {
+              name: customerInfo.name,
+              orderId: customerInfo.orderId,
+            })
+          );
+
+          // Send the confirmation email
+          const msg = {
+            to: customerInfo.email,
+            from: "Hud Wahab <hud@nmcore.com>",
+            subject: 'Order Confirmation',
+            html: emailHtml,
+          };
+
+          console.log('Sending confirmation email to:', customerInfo.email);
           const output = await sgMail.send(msg);
           console.log("Email sent successfully:", output);
         } catch (error) {
-          console.error("Error sending email:", error);
+          console.error("Error rendering or sending confirmation email:", error);
         }
 
         break;

@@ -1,45 +1,39 @@
-import type { ServiceAccount } from 'firebase-admin/app';
-import { cert, initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+//filepath: nmcore-landing/src/seed.ts
+import { config } from 'dotenv';
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { Firestore, getFirestore } from 'firebase-admin/firestore';
 
-// Get the directory name in ES module scope
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Ensure the correct environment file is loaded
+const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+config({ path: envFile });
 
-// Determine the correct service account key file based on the environment
-const isEmulator = process.env.FIRESTORE_EMULATOR === 'true';
-const serviceAccountFile = isEmulator
-  ? '../serviceAccountKey.staging.json' // Use the staging service account for the emulator
-  : '../serviceAccountKey.json'; // Use the production service account otherwise
-
-// Ensure the file exists
-if (!fs.existsSync(path.resolve(__dirname, serviceAccountFile))) {
-  throw new Error(`Service account key file not found: ${serviceAccountFile}`);
+const serviceAccountKeyBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64;
+if (!serviceAccountKeyBase64) {
+  throw new Error('Missing FIREBASE_SERVICE_ACCOUNT_KEY_BASE64 environment variable');
 }
 
-// Import the service account key
-const serviceAccount = JSON.parse(fs.readFileSync(path.resolve(__dirname, serviceAccountFile), 'utf8'));
+const serviceAccountKey = Buffer.from(serviceAccountKeyBase64, 'base64').toString('utf8');
+const serviceAccount = JSON.parse(serviceAccountKey);
 
-// Initialize Admin SDK using the service account JSON
-initializeApp({
-  credential: cert(serviceAccount as ServiceAccount),
-});
+// Initialize Firebase Admin SDK
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount),
+  });
+}
 
 const db = getFirestore();
 
-// Connect to the Firestore emulator if running locally
-if (isEmulator) {
-  db.settings({
-    host: '127.0.0.1:8080',
+// **Configure Firestore to Use Emulator If Running**
+if (process.env.FIRESTORE_EMULATOR_HOST) {
+  const [host, port] = process.env.FIRESTORE_EMULATOR_HOST.split(':');
+  (db as Firestore).settings({
+    host: `${host}:${port}`,
     ssl: false,
   });
-  console.log('Connected to Firestore emulator.');
+  console.log(`Seeding Firestore Emulator at ${host}:${port}`);
 }
 
-// 3. Define your product data
 // Define product data
 const products = [
   {
@@ -76,8 +70,8 @@ const products = [
         price: 2799, // in cents
         sku: "BLOOM-REFILL",
         stock: 50,
-        stripePriceId: "price_1QTb07GV3ULNhXDgRL5KAHhy",
-        stripeProductId: "prod_RMJdfxE0RjAUkU",
+        stripePriceId: process.env[`BLOOM_REFILL_STRIPE_PRICE_ID`],
+        stripeProductId: process.env[`BLOOM_REFILL_STRIPE_PRODUCT_ID`], 
         weight: 1.2
       },
       {
@@ -88,8 +82,8 @@ const products = [
         price: 3999, // in cents
         sku: "BLOOM-STARTER",
         stock: 30,
-        stripePriceId: "price_1QTazPGV3ULNhXDgVKPCIwRn",
-        stripeProductId: "prod_RMJcq5ccixGiHG",
+        stripePriceId: process.env[`BLOOM_STARTER_STRIPE_PRICE_ID`],
+        stripeProductId: process.env[`BLOOM_STARTER_STRIPE_PRODUCT_ID`],
         weight: 1.5
       }
     ],
@@ -97,7 +91,7 @@ const products = [
     rating: 4.5,
     returnPolicy: "30-day return policy",
     reviews: [] as any[],
-    shippingInformation: "Ships in 3-5 business days",
+    shippingInformation: "Ships in 5-7 business days",
     tags: ["carbon quantum dot technology, photosynthesis, low-light plant growth, nanotechnology, agriculture, crop health, yield improvement"],
     thumbnail: "https://res.cloudinary.com/nmcore/image/upload/v1736218233/bloom-starter-kit-1.png",
     title: "BLOOM",
@@ -121,7 +115,19 @@ async function seedFirestore() {
 
     // Reference Firestore document by ID
     const productRef = db.collection('products').doc(product.id);
-    batch.set(productRef, productDoc, { merge: false }); // Overwrite existing doc
+
+    // Check if the product already exists
+    const productSnapshot = await productRef.get();
+    if (productSnapshot.exists) {
+      // If the product exists, update only the fields that should be updated
+      const existingProduct = productSnapshot.data();
+      productDoc.productSizes = productDoc.productSizes.map((size, index) => ({
+        ...size,
+        stock: existingProduct.productSizes[index].stock // Preserve existing stock
+      }));
+    }
+
+    batch.set(productRef, productDoc, { merge: true }); // Merge with existing doc
   }
 
   // Commit the batch

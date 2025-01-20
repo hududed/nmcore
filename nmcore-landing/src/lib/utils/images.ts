@@ -1,7 +1,7 @@
 //filepath: /nmcore-landing/src/lib/utils/images.ts
 import { PUBLIC_CLOUDINARY_API_KEY, PUBLIC_CLOUDINARY_CLOUD_NAME } from '$env/static/public';
 
-console.log('Loaded Public ENV:', { PUBLIC_CLOUDINARY_CLOUD_NAME, PUBLIC_CLOUDINARY_API_KEY });
+// console.log('Loaded Public ENV:', { PUBLIC_CLOUDINARY_CLOUD_NAME, PUBLIC_CLOUDINARY_API_KEY });
 
 export async function fetchImageURL(
   image: { cloudinaryId: string },

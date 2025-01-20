@@ -80,10 +80,10 @@ export const POST: RequestHandler = async ({ request }) => {
           shipping_rate_data: {
             type: 'fixed_amount',
             fixed_amount: {
-              amount: 999,
+              amount: 0,
               currency: 'usd',
             },
-            display_name: 'Ground shipping',
+            display_name: 'Free shipping',
             delivery_estimate: {
               minimum: {
                 unit: 'business_day',

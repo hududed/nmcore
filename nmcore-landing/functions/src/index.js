@@ -2,8 +2,6 @@
 import { installPolyfills } from '@sveltejs/kit/node/polyfills';
 import cors from 'cors';
 import express from 'express';
-import { getApps, initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
 import { defineSecret } from 'firebase-functions/params';
 import { onRequest } from 'firebase-functions/v2/https';
 import { dirname, join } from 'path';
@@ -11,15 +9,10 @@ import { fileURLToPath } from 'url';
 import { Server } from '../server/index.js';
 import { manifest, prerendered } from '../server/manifest.js';
 import { createCloudinaryHandler } from './api-handlers/cloudinary.js';
+import { db } from './firestore.js';
 import { stripeWebhookHandler } from './stripeWebhookHandler.js';
 
 installPolyfills();
-
-// Initialize Firebase Admin SDK
-if (!getApps().length) {
-  initializeApp();
-}
-const db = getFirestore();
 
 // Define Cloudinary secrets
 const CLOUDINARY_API_SECRET = defineSecret('CLOUDINARY_API_SECRET');
@@ -85,8 +78,8 @@ const expressApp = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log('filename:', __filename);
-console.log('dirname:', __dirname);
+// console.log('filename:', __filename);
+// console.log('dirname:', __dirname);
 
 expressApp.use(cors({ origin: true }));
 expressApp.use(express.json()); // Parse JSON body
@@ -146,7 +139,7 @@ expressApp.get('/api/products/:id', async (req, res) => {
   }
 
   try {
-    console.log(`Fetching product with ID: ${id}`);
+    console.log(`[DEBUG] Fetching product with ID: ${id}`);
     const productSnapshot = await db.collection('products').where('id', '==', id).get();
 
     if (productSnapshot.empty) {
@@ -177,7 +170,11 @@ expressApp.get('/api/products/:id', async (req, res) => {
 });
 
 // Define /api/stripe-webhook route
-expressApp.post('/api/stripe-webhook', stripeWebhookHandler);
+expressApp.post(
+  '/api/stripe-webhook',
+  express.raw({ type: 'application/json' }), // Use raw body parser for Stripe
+  stripeWebhookHandler
+);
 
 // Handle all other routes with SvelteKit
 expressApp.use(handleSvelteKitRequest);

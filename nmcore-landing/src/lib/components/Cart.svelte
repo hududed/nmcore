@@ -1,4 +1,5 @@
 <script lang="ts">
+  // filepath: nmcore-landing/src/lib/components/Cart.svelte
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import { cartOpen, cartProducts, cartStats, updateQuantity } from '$lib/stores/cartStore';
   import type { Product } from '$lib/types';

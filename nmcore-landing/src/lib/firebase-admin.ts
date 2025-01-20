@@ -1,4 +1,4 @@
-//filepath: /nmc-core-landing/src/lib/firebase-admin.ts
+//filepath: /nmcore-landing/src/lib/firebase-admin.ts
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
