@@ -10,7 +10,6 @@ import { Server } from '../server/index.js';
 import { manifest, prerendered } from '../server/manifest.js';
 import { createCloudinaryHandler } from './api-handlers/cloudinary.js';
 import { db } from './firestore.js';
-import { stripeWebhookHandler } from './stripeWebhookHandler.js';
 
 installPolyfills();
 
@@ -18,11 +17,6 @@ installPolyfills();
 const CLOUDINARY_API_SECRET = defineSecret('CLOUDINARY_API_SECRET');
 const CLOUDINARY_API_KEY = defineSecret('CLOUDINARY_API_KEY');
 const CLOUDINARY_CLOUD_NAME = defineSecret('CLOUDINARY_CLOUD_NAME');
-
-// Define Stripe secrets
-const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
-const STRIPE_WEBHOOK_SECRET = defineSecret('STRIPE_WEBHOOK_SECRET');
-const SENDGRID_API_KEY = defineSecret('SENDGRID_KEY');
 
 // Helper function to convert Express request to SvelteKit request
 function toSvelteKitRequest(request) {
@@ -78,9 +72,6 @@ const expressApp = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// console.log('filename:', __filename);
-// console.log('dirname:', __dirname);
-
 expressApp.use(cors({ origin: true }));
 expressApp.use(express.json()); // Parse JSON body
 
@@ -130,52 +121,6 @@ expressApp.get('/api/products', async (req, res) => {
   }
 });
 
-// Define /api/products/:id route (get specific product by ID)
-expressApp.get('/api/products/:id', async (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json({ error: 'Product ID is missing from the URL' });
-  }
-
-  try {
-    console.log(`[DEBUG] Fetching product with ID: ${id}`);
-    const productSnapshot = await db.collection('products').where('id', '==', id).get();
-
-    if (productSnapshot.empty) {
-      return res.status(404).json({ error: `Product not found for ID: ${id}` });
-    }
-
-    const productDoc = productSnapshot.docs[0];
-    const product = productDoc.data();
-
-    return res.status(200).json({
-      product: {
-        ...product,
-        images: product.images.map((img) => ({
-          cloudinaryId: img.cloudinaryId,
-        })),
-        productSizes: product.productSizes.map((size) => ({
-          ...size,
-          mainImage: {
-            cloudinaryId: size.mainImage.cloudinaryId,
-          },
-        })),
-      },
-    });
-  } catch (err) {
-    console.error('Error fetching product:', err);
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// Define /api/stripe-webhook route
-expressApp.post(
-  '/api/stripe-webhook',
-  express.raw({ type: 'application/json' }), // Use raw body parser for Stripe
-  stripeWebhookHandler
-);
-
 // Handle all other routes with SvelteKit
 expressApp.use(handleSvelteKitRequest);
 
@@ -186,9 +131,6 @@ export const app = onRequest(
       CLOUDINARY_API_SECRET,
       CLOUDINARY_API_KEY,
       CLOUDINARY_CLOUD_NAME,
-      STRIPE_SECRET_KEY,
-      STRIPE_WEBHOOK_SECRET,
-      SENDGRID_API_KEY,
     ],
     region: 'us-central1'
   },

@@ -9,8 +9,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"seed": "tsx src/seed.ts",
 		"build:all": "cross-env NODE_ENV=$NODE_ENV vite build && cd functions && npm run build:functions && cd ..",
-		"emulate": "cross-env NODE_ENV=development npm run build:all && npm run copy:prerendered && firebase emulators:start",
-		"deploy:staging": "cross-env NODE_ENV=staging npm run build:all && npm run copy:prerendered && firebase deploy --only hosting,functions",
+		"emulate": "cross-env NODE_ENV=development FIRESTORE_EMULATOR_HOST=localhost:8080 npm run build:all && npm run copy:prerendered && firebase emulators:start",
+		"deploy:staging": "cross-env NODE_ENV=staging npm run build:all && npm run copy:prerendered && firebase deploy",
 		"deploy:production": "cross-env NODE_ENV=production npm run build:all && npm run copy:prerendered  && firebase deploy --only hosting,functions",
 		"release": "standard-version"
 	},
