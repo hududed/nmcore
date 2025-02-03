@@ -63,7 +63,7 @@ const products = [
     // Each product size with its own main image
     productSizes: [
       {
-        code: "refill",
+        code: "Refill",
         mainImage: { cloudinaryId: "bloom-refill-1", width: 1080, height: 1920 },
         availabilityStatus: "In Stock",
         dimensions: { depth: 5, height: 20, width: 10 },
@@ -75,7 +75,7 @@ const products = [
         weight: 1.2
       },
       {
-        code: "starter_kit",
+        code: "Starter Kit",
         mainImage: { cloudinaryId: "bloom-starter-kit-1", width: 1080, height: 1920 },
         availabilityStatus: "In Stock",
         dimensions: { depth: 6, height: 24, width: 12 },
