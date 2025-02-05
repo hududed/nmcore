@@ -3,14 +3,8 @@ import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import dotenv from 'dotenv';
 
-// Load environment variables based on NODE_ENV
-const envFile =
-  process.env.NODE_ENV === 'production'
-    ? '.env.production'
-    : process.env.NODE_ENV === 'staging'
-    ? '.env.staging'
-    : '.env';
-
+// Load environment variables from the correct .env file
+const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: envFile });
 
 /** @type {import('@sveltejs/kit').Config} */

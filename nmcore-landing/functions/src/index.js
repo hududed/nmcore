@@ -132,7 +132,7 @@ export const app = onRequest(
       CLOUDINARY_API_KEY,
       CLOUDINARY_CLOUD_NAME,
     ],
-    region: 'us-central1'
+    region: 'us-west1'
   },
   expressApp
 );

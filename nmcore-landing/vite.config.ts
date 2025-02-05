@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { defineConfig } from 'vite';
 
 // Ensure the correct environment file is loaded
-const envFile = `.env.${process.env.NODE_ENV || 'production'}`;
+const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: envFile });
 
 export default defineConfig({

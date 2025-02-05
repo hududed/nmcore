@@ -16,5 +16,8 @@ service cloud.firestore {
     match /reviews/{reviewId} {
       allow read, write: if true;
     }
+    match /reviewTokens/{token} {
+      allow read, write: if true;
+    }
   }
 }

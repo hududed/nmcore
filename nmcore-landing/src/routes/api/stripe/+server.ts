@@ -1,20 +1,27 @@
+// file: src/routes/api/stripe/+server.ts
 import ConfirmationEmail from '$lib/email/confirmation-email';
 import { adminDb as db } from '$lib/firebase-admin';
-import { render } from '@react-email/components';
+// import { render } from '@react-email/components';
+import { render } from '@react-email/render';
 import sgMail from '@sendgrid/mail';
 import type { RequestHandler } from '@sveltejs/kit';
+import type { DocumentData, DocumentReference } from 'firebase-admin/firestore';
 import { createElement } from 'react';
 import Stripe from 'stripe';
+import { v4 as uuidv4 } from 'uuid';
 
 // Initialize Stripe with the secret key from environment variables
 const stripeSecretKey = process.env.VITE_STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.VITE_STRIPE_WEBHOOK_SECRET;
 const sendgridApiKey = process.env.SENDGRID_FB_API_KEY;
 
+
+
 if (!stripeSecretKey || !stripeWebhookSecret || !sendgridApiKey) {
   throw new Error('Missing environment variables');
 }
 
+// @ts-ignore
 const stripe = new Stripe(stripeSecretKey, {
   apiVersion: '2024-12-18.acacia',
 });
@@ -142,13 +149,25 @@ export const POST: RequestHandler = async ({ request }) => {
         console.error('Error committing Firestore batch:', error);
       }
 
+      // Generate a unique review token
+      const reviewToken = uuidv4();
+      const reviewTokenRef: DocumentReference<DocumentData> = db.collection('reviewTokens').doc(reviewToken);
+      await reviewTokenRef.set({
+        orderId: customerInfo.orderId,
+        email: customerInfo.email,
+        createdAt: new Date(),
+        used: false
+      });
+
       // Render the confirmation email template
       try {
         console.log('Rendering confirmation email template');
+
         const emailHtml = await render(
           createElement(ConfirmationEmail, {
             name: customerInfo.name,
             orderId: customerInfo.orderId,
+            reviewToken: reviewToken
           })
         );
 

@@ -1,4 +1,3 @@
-// functions/src/email/confirmation-email.jsx
 import {
   Body,
   Container,
@@ -15,9 +14,17 @@ import * as React from 'react';
 interface ConfirmationEmailProps {
   name: string;
   orderId: string;
+  reviewToken: string;
 }
 
-export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({ name, orderId }) => {
+export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = (props) => {
+  // Ensure all props are strings
+  const name = String(props.name || '');
+  const orderId = String(props.orderId || '');
+  const reviewToken = String(props.reviewToken || '');
+  const frontendUrl = process.env.VITE_FRONTEND_URL || 'https://www.nmcore.com';
+  const reviewLink = `${frontendUrl}/review?token=${reviewToken}`;
+
   return (
     <Html>
       <Head />
@@ -25,19 +32,23 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({ name, orde
       <Tailwind>
         <Body className="bg-white my-auto mx-auto font-sans px-2">
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
-            <Text className="text-black text-[14px] leading-[24px]">Thank you {name} for your purchase!</Text>
             <Text className="text-black text-[14px] leading-[24px]">
-              Your order is being processed. Your order ID is {orderId}.
+              Thank you {name} for your purchase!
             </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              Your order is being processed. Your order ID is <strong>{orderId}</strong>.
+            </Text>
+            <Text className="text-black text-[14px] leading-[24px]">
+              We would love to hear your feedback. Please leave a review by clicking the link below:
+            </Text>
+            <Link href={reviewLink} className="text-blue-500 underline">Leave a Review</Link>
             <Text className="text-black text-[14px] leading-[24px]">
               For inquiries, reach us at{' '}
               <Link href="mailto:hud@nmcore.com">hud@nmcore.com</Link>
             </Text>
             <Text className="text-black text-[12px] leading-[4px] pt-4">Best,</Text>
             <Text className="text-black text-[12px] leading-[4px] ml-1">Hud</Text>
-            <Text className="text-black text-[12px] leading-[4px] ml-1 italic">
-              NMCore Team
-            </Text>
+            <Text className="text-black text-[12px] leading-[4px] ml-1 italic">NMCore Team</Text>
             <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
           </Container>
         </Body>
