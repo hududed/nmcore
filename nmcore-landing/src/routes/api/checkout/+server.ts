@@ -25,7 +25,9 @@ const stripeSecretKey = process.env.VITE_STRIPE_SECRET_KEY;
 if (!stripeSecretKey) {
   throw new Error('Missing VITE_STRIPE_SECRET_KEY in environment variables');
 }
+
 const stripe = new Stripe(stripeSecretKey, {
+  // @ts-ignore
   apiVersion: '2024-12-18.acacia',
 });
 

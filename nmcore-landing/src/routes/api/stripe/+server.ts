@@ -1,7 +1,6 @@
 // file: src/routes/api/stripe/+server.ts
 import ConfirmationEmail from '$lib/email/confirmation-email';
 import { adminDb as db } from '$lib/firebase-admin';
-// import { render } from '@react-email/components';
 import { render } from '@react-email/render';
 import sgMail from '@sendgrid/mail';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -15,14 +14,12 @@ const stripeSecretKey = process.env.VITE_STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.VITE_STRIPE_WEBHOOK_SECRET;
 const sendgridApiKey = process.env.SENDGRID_FB_API_KEY;
 
-
-
 if (!stripeSecretKey || !stripeWebhookSecret || !sendgridApiKey) {
   throw new Error('Missing environment variables');
 }
 
-// @ts-ignore
 const stripe = new Stripe(stripeSecretKey, {
+  // @ts-ignore
   apiVersion: '2024-12-18.acacia',
 });
 
@@ -89,9 +86,11 @@ export const POST: RequestHandler = async ({ request }) => {
       // Prepare a Firestore batch
       const batch = db.batch();
 
+      let productDoc; // Define productDoc here
+
       for (const item of items) {
         console.log(
-          `Processing item: ${item.name}, stripePriceId: ${item.stripePriceId}, quantity: ${item.quantity}`
+          `Processing item: ${item.name}, stripePriceId: ${item.stripePriceId}, stripeProductId: ${item.stripeProductId}, quantity: ${item.quantity}`
         );
 
         // Query for the doc that contains stripePriceId
@@ -104,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
           continue;
         }
 
-        const productDoc = productQuerySnapshot.docs[0];
+        productDoc = productQuerySnapshot.docs[0];
         const productData = productDoc.data();
 
         // Ensure productSizes is an array
@@ -153,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const reviewToken = uuidv4();
       const reviewTokenRef: DocumentReference<DocumentData> = db.collection('reviewTokens').doc(reviewToken);
       await reviewTokenRef.set({
-        orderId: customerInfo.orderId,
+        productId: productDoc.id,
         email: customerInfo.email,
         createdAt: new Date(),
         used: false

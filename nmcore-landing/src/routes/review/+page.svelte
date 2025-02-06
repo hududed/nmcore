@@ -1,7 +1,7 @@
 <script lang="ts">
     //filepath: nmcore-landing/src/routes/review/%2Bpage.svelte
   import { enhance } from '$app/forms';
-  let { data } = $props<{ data: { validToken: boolean; orderId: string } }>();
+  let { data } = $props<{ data: { validToken: boolean; productId: string, reviewToken: string } }>();
 
   console.log('🚀 Loaded Page Props:', data );
 
@@ -9,10 +9,6 @@
   let rating = $state(0);
 </script>
 
-<!-- <div class="mt-24">
-  <p>DEBUG: validToken = {String(data.validToken)} (type: {typeof data.validToken})</p>
-  <p>DEBUG: orderId = {data.orderId}</p>
-</div> -->
 
 {#if data?.validToken}
   <div class="container mx-auto p-4">
@@ -22,15 +18,14 @@
       action="?/submitReview"
       use:enhance={
         (_context) => {
-          // Return a callback function that receives the action result.
-          // We declare its parameter as "any" to bypass type errors.
           return async (actionResult: any) => {
             console.log("Action result:", actionResult);
           };
         }
       }
     >
-      <input type="hidden" name="orderId" value={data.orderId} />
+      <input type="hidden" name="productId" value={data.productId} />
+      <input type="hidden" name="reviewToken" value={data.reviewToken} />
       <input
         type="number"
         name="rating"
@@ -50,7 +45,7 @@
     </form>
   </div>
 {:else}
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto p-4 mt-32">
     <h1 class="text-2xl font-bold mb-4">Invalid or Expired Token</h1>
     <p>Please check your email for the correct review link.</p>
   </div>
