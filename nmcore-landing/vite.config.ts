@@ -1,6 +1,7 @@
 //filepath: nmcore-landing/vite.config.ts
 import { sveltekit } from '@sveltejs/kit/vite';
 import dotenv from 'dotenv';
+import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vite';
 
 // Ensure the correct environment file is loaded
@@ -8,7 +9,12 @@ const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: envFile });
 
 export default defineConfig({
-    plugins: [sveltekit()],
+    plugins: [
+        sveltekit(),
+        Icons({
+            compiler: 'svelte',
+        }),
+    ],
     define: {
         'process.env': process.env, // Ensure environment variables are included in the build
     },

@@ -1,10 +1,12 @@
-import { fontFamily } from "tailwindcss/defaultTheme";
+import { join } from "path";
+import { skeleton } from '@skeletonlabs/tw-plugin';
 import tailwindcssAnimate from "tailwindcss-animate";
+import { fontFamily } from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 const config = {
 	darkMode: ["class"],
-	content: ["./src/**/*.{html,js,svelte,ts}"],
+	content: ["./src/**/*.{html,js,svelte,ts}",join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')],
 	safelist: ["dark"],
 	theme: {
 		container: {
@@ -90,7 +92,10 @@ const config = {
       		},
 		},
 	},
-	plugins: [tailwindcssAnimate],
+	plugins: [
+		tailwindcssAnimate,
+		skeleton
+	],
 };
 
 export default config;
