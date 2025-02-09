@@ -7,6 +7,7 @@
   import type { Product, ProductSize } from '$lib/types';
   import { getCloudinaryId } from '$lib/utils/images';
   import { get } from 'svelte/store';
+  import StarRateRounded from '~icons/material-symbols/star-rate-rounded';
   import ProductDesc from './ProductDesc.svelte';
 
   // Declare the product prop
@@ -46,6 +47,14 @@
       cartOpen.set(true);
     }
   }
+
+  // Function to scroll to reviews section
+  function scrollToReviews() {
+    const reviewsSection = document.getElementById('reviews');
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 </script>
 
 <div class="bg-white shadow-md rounded-lg p-6">
@@ -58,10 +67,13 @@
     </p>
 
     <!-- Dynamic ratings -->
-    <p class="text-gray-600 mb-2">
-      User rating: {product.rating}-star ({product.reviews.length || 0} ratings)
-    </p>
-    <a href="#ratings" class="text-blue-500 underline mb-4 block">See all ratings</a>
+    <div class="flex items-center justify-center mb-2">
+      <StarRateRounded style="width: 1.5em; height: 1.5em;" />
+      <span class="ml-1">{product.rating}</span>
+      <a href="#reviews" class="text-blue-500 underline ml-2" onclick={scrollToReviews}>
+        ({product.reviews.length || 0})
+      </a>
+    </div>
 
     <h2 class="text-lg font-semibold mb-2">SIZE</h2>
     <div class="flex justify-center space-x-2 mb-4">

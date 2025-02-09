@@ -6,6 +6,7 @@ import { error } from '@sveltejs/kit';
 export async function load({ params }: { params: { id: string } }) {
   console.log('Received product ID:', params.id);
 
+  // TODO: reviews are now coming directly from reviewTokens collections i.e. reviewTokens.images, reviewTokens.rating, reviewTokens.review 
   try {
     const { id } = params;
     if (!id) {
@@ -21,7 +22,6 @@ export async function load({ params }: { params: { id: string } }) {
 
     const productDoc = productSnapshot.docs[0];
     const product = productDoc.data() as Product;
-
     return {
       product: {
         ...product,
@@ -34,6 +34,7 @@ export async function load({ params }: { params: { id: string } }) {
             cloudinaryId: size.mainImage.cloudinaryId, // Ensure this is passed as-is
           },
         })),
+        reviews: product.reviews
       },
     };
   } catch (err) {

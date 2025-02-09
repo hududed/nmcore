@@ -20,7 +20,11 @@
 
 </script>
 
-
+<!-- TODO: Interactive dialog with next/back/skip buttons
+1. Rating -> reviewTokens.rating and products/[id]/ratings
+2. useCase (low-light houseplants, lush gardens) -> products/[id]/useCase (garden or houseplant)
+3. Show it Off ! (Add photos upload to Cloudinary with CldUploadWidget) -> reviewTokens.images (Cloudinary image IDs)
+3. Tell us more! (reviews) -> reviewTokens.reviews  -->
 {#if data?.validToken}
   <div class="container mx-auto p-4 mt-32">
     <h1 class="text-2xl font-bold mb-4">Leave a Review</h1>
