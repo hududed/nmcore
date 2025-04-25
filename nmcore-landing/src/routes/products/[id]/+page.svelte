@@ -5,13 +5,11 @@
   import Meta from '$lib/components/seo/Meta.svelte';
   import StructuredData from '$lib/components/seo/StructuredData.svelte';
   import Thumbnail from '$lib/components/Thumbnail.svelte';
-  import * as Card from "$lib/components/ui/card";
   import { largePhoto } from '$lib/stores/productStore';
   import type { CloudinaryImage, Product } from '$lib/types';
   import { getCloudinaryId } from '$lib/utils/images';
   import { onMount } from 'svelte';
   import { CldImage } from 'svelte-cloudinary';
-  import StarRateRounded from '~icons/material-symbols/star-rate-rounded';
 
   const { data } = $props<{ data: { product: Product } }>();
 
@@ -73,7 +71,7 @@
   }}
 />
 
-<main class="container py-8 mt-24 md:mt-32">
+<main class="container py-8 mt-12 md:mt-16 bg-zinc-300">
   <div class="flex flex-wrap">
     <div class="w-full md:w-1/2 md:sticky md:top-24">
       <!-- Main Product Image -->
@@ -115,10 +113,12 @@
   </div>
 </main>
 
-<!-- TODO: Updated showing 1. image(s) fetched from reviewTokens.images (CldImage links) 2. Rating (reviewTokens.rating), 3. Reviews (reviewTokens.review)-->
+
+
+<!-- TODO: Updated showing 1. image(s) fetched from product.reviews.images (CldImage links, can be empty) 2. Rating (product.reviews.rating), 3. Date (re) 4. Reviews (prdocuts.reviews.review)-->
 <!-- Reviews Section -->
-<div id="reviews" class="container mx-auto p-4 mt-8 max-w-screen-xl">
-  <h2 class="text-2xl font-bold mb-4">Reviews</h2>
+<!-- <div id="reviews" class="container mx-auto p-4 mt-8 max-w-screen-xl bg-zinc-300">
+  <h2 class="text-2xl font-bold mb-4 text-zinc-600">Reviews</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {#each data.product.reviews as review}
       <Card.Root class="bg-zinc-100 p-4 rounded-lg border border-zinc-600">
@@ -127,11 +127,19 @@
             <StarRateRounded style="width: 1.5em; height: 1.5em;" />
             <span class="ml-1">{review.rating}</span>
           </div>
+          <div class="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</div>
         </Card.Header>
-        <Card.Content class="p-4">
+        <Card.Content class="p-4 text-left">
           <p>{review.review}</p>
+          {#if review.images && review.images.length > 0}
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              {#each review.images as image}
+                <CldImage src={image.cloudinaryId} width="100" height="100" crop="fill" class="rounded-lg" />
+              {/each}
+            </div>
+          {/if}
         </Card.Content>
       </Card.Root>
     {/each}
   </div>
-</div>
+</div> -->
