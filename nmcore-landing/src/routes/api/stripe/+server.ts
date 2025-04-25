@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Send the confirmation email
         const msg = {
           to: customerInfo.email,
-          from: "Hud Wahab <hud@nmcore.com>",
+          from: "Hud Wahab <hello@nmcore.com>",
           subject: 'Order Confirmation',
           html: emailHtml,
         };

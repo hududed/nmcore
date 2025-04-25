@@ -5,7 +5,7 @@
 <nav class="bg-white border-b border-gray-200 py-2 lg:py-4 w-full fixed top-0 left-0 z-50">
   <div class="flex justify-between items-center max-w-screen-xl mx-auto px-4 md:px-8">
     <div>
-      <img src="/images/nmcore_logo.jpg" alt="NMCore BLOOM Logo" class="inline-block w-36 lg:w-48" />
+      <img src="/images/nmcore_logo_onwhite.png" alt="nmCORE BLOOM Logo" class="inline-block w-36 lg:w-48" />
     </div>
     <div class="hidden md:flex space-x-4 text-sm lg:text-base">
       <!-- Add your navigation links here -->
