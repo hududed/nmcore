@@ -37,7 +37,7 @@
 <div class="flex flex-col min-h-screen">
   <Navbar />
 
-  <main class="flex-grow card w-full bg-neutral text-neutral-content mx-auto overflow-x-hidden">
+  <main class="flex-grow card w-full bg-zinc-300 text-neutral-content mx-auto overflow-x-hidden">
     <div class="card-body items-center text-center">
       {@render children?.()}
       <Toaster />

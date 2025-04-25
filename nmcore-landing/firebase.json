@@ -29,7 +29,8 @@
       },
       {
         "source": "**",
-        "function": "app"
+        "function": "app",
+        "region": "us-west1"
       }
     ]
   },

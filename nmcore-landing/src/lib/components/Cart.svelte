@@ -20,7 +20,7 @@
 </script>
 
 <Sheet.Root open={open} onOpenChange={toggleCart}>
-  <Sheet.Content class="w-3/5 max-w-lg max-h-[calc(100vh-100px)] overflow-y-auto">
+  <Sheet.Content class="w-3/5 max-w-lg max-h-[calc(100vh-100px)] overflow-y-auto bg-zinc-100">
     <Sheet.Header>
       <Sheet.Title>Shopping Cart</Sheet.Title>
     </Sheet.Header>
@@ -40,9 +40,9 @@
               <p class="font-bold">{item.product.title}</p>
               <p>Size: {item.size}</p>
               <div class="flex items-center">
-                <button class="bg-gray-200 border-none p-2 cursor-pointer" onclick={() => updateQuantity(item.id, -1)}>-</button>
+                <button class="bg-zinc-300 border-none p-2 cursor-pointer" onclick={() => updateQuantity(item.id, -1)}>-</button>
                 <span class="mx-2 w-8 text-center">{item.quantity}</span>
-                <button class="bg-gray-200 border-none p-2 cursor-pointer" onclick={() => updateQuantity(item.id, 1)}>+</button>
+                <button class="bg-zinc-300 border-none p-2 cursor-pointer" onclick={() => updateQuantity(item.id, 1)}>+</button>
               </div>
               <p>Total: ${(item.price / 100 * item.quantity).toFixed(2)}</p>
             </div>
@@ -53,10 +53,10 @@
       {/if}
     </Sheet.Description>
     {#if $cartProducts.length > 0}
-      <div class="sticky bottom-0 bg-white p-4 border-t border-gray-200 flex flex-col items-center">
+      <div class="sticky bottom-0 bg-zinc-300 p-4 border-t border-gray-200 flex flex-col items-center">
         <span>Subtotal: ${($cartStats.total / 100).toFixed(2)}</span>
         <p class="text-gray-600 text-sm">Shipping, taxes, and discount codes calculated at checkout.</p>
-        <button class="bg-green-500 text-white p-4 rounded mt-4 w-full text-center" onclick={handleCheckout}>Checkout</button>
+        <button style="background-color: #39B54A;"  class="text-white p-4 rounded mt-4 w-full text-center" onclick={handleCheckout}>Checkout</button>
       </div>
     {/if}
   </Sheet.Content>

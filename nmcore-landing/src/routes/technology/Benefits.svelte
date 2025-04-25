@@ -2,7 +2,7 @@
   import * as Card from "$lib/components/ui/card";
 </script>
 
-<div class="bg-zinc-800 text-zinc-50 py-12 md:py-24 lg:py-48 px-2 md:px-8 w-full">
+<div class="bg-zinc-800 text-zinc-50 py-12 md:py-24 lg:py-48 px-2 md:px-8 w-full" style="font-family: 'DIN2014', sans-serif;">
   <div class="container mx-auto flex flex-col gap-2 max-w-screen-xl">
     <Card.Root class="bg-zinc-700 p-4 rounded-lg border border-zinc-600">
       <Card.Header class="p-4">

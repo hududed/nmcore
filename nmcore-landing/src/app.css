@@ -73,3 +73,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: 'DIN2014';
+  src: url('/fonts/DIN2014_Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN2014';
+  src: url('/fonts/DIN2014_Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}

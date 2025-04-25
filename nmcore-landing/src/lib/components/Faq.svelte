@@ -2,13 +2,14 @@
   import * as Accordion from '$lib/components/ui/accordion';
 </script>
 
-<div class="w-full bg-white">
+
+<div class="w-full bg-zinc-300 text-zinc-600" style="font-family: 'DIN2014', sans-serif;">
   <div class="mx-auto flex flex-col">
     <div class="grow">
       <div class="flex flex-col">
         <Accordion.Root type="single" class="w-full">
           <Accordion.Item value="q-1">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               What is BLOOM?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -16,7 +17,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-2">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               What do you use BLOOM for?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -28,7 +29,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-3">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               How does BLOOM work?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -36,7 +37,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-4">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               When is BLOOM most effective?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -48,7 +49,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-5">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               How often should I use BLOOM?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -56,7 +57,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-6">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               Can BLOOM harm your plants?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -64,7 +65,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-7">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               Can BLOOM work in direct sunlight?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -72,7 +73,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-8">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               Will BLOOM work on all plants?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -80,7 +81,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-9">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               Can I use BLOOM on edible plants?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">
@@ -88,7 +89,7 @@
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value="q-10">
-            <Accordion.Trigger class="text-lg font-semibold text-left">
+            <Accordion.Trigger class="text-lg font-semibold text-left" style="font-weight: bold;">
               Does BLOOM leave residue or have a smell?
             </Accordion.Trigger>
             <Accordion.Content class="text-base whitespace-pre-line text-left">

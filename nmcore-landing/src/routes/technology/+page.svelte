@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Faq from '$lib/components/FaqCrop.svelte';
   import Benefits from './Benefits.svelte';
   import Introduction from './Introduction.svelte';
   import Solution from './Solution.svelte';
@@ -24,9 +23,9 @@
   <Solution />
 </div>
 
-<div class="faq-section mt-0">
+<!-- <div class="faq-section mt-0">
   <Faq />
-</div>
+</div> -->
 
 <!-- <div class="card #172554 text-center mt-32 p-4">
   <h2 class="text-2xl md:text-3xl mb-4">Join Our Testing/Validation Phase</h2>
