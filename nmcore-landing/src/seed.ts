@@ -47,8 +47,10 @@ const products = [
     images: [
       { cloudinaryId: "bloom-refill-1", width: 1920, height: 1080 },
       { cloudinaryId: "bloom-starter-kit-1", width: 1920, height: 1080 },
-      { cloudinaryId: "tomatoes-thumbnail", width: 1920, height: 1080 },
+      { cloudinaryId: "compare-yield", width: 1920, height: 1080 },
+      { cloudinaryId: "compare-lowlight", width: 1920, height: 1080 },
       { cloudinaryId: "nmcore-landing-banner-1", width: 1920, height: 1080 },
+      // { cloudinaryId: "tomatoes-thumbnail", width: 1920, height: 1080 },
     ],
 
     meta: {
@@ -91,6 +93,7 @@ const products = [
     rating: 4.5,
     returnPolicy: "30-day return policy",
     reviews: [] as any[],
+    useCases: [] as any[],
     shippingInformation: "Ships in 5-7 business days",
     tags: ["carbon quantum dot technology, photosynthesis, low-light plant growth, nanotechnology, agriculture, crop health, yield improvement"],
     thumbnail: "https://res.cloudinary.com/nmcore/image/upload/v1736218233/bloom-starter-kit-1.png",

@@ -7,7 +7,6 @@
   import type { Product, ProductSize } from '$lib/types';
   import { getCloudinaryId } from '$lib/utils/images';
   import { get } from 'svelte/store';
-  import StarRateRounded from '~icons/material-symbols/star-rate-rounded';
   import ProductDesc from './ProductDesc.svelte';
 
   // Declare the product prop
@@ -57,7 +56,7 @@
   }
 </script>
 
-<div class="bg-white shadow-md rounded-lg p-6">
+<div class="bg-zinc-300 shadow-md rounded-lg p-6">
   {#if product}
     <h1 class="text-2xl font-bold mb-2">{product.title}</h1>
 
@@ -67,13 +66,13 @@
     </p>
 
     <!-- Dynamic ratings -->
-    <div class="flex items-center justify-center mb-2">
+    <!-- <div class="flex items-center justify-center mb-2">
       <StarRateRounded style="width: 1.5em; height: 1.5em;" />
       <span class="ml-1">{product.rating}</span>
       <a href="#reviews" class="text-blue-500 underline ml-2" onclick={scrollToReviews}>
         ({product.reviews.length || 0})
       </a>
-    </div>
+    </div> -->
 
     <h2 class="text-lg font-semibold mb-2">SIZE</h2>
     <div class="flex justify-center space-x-2 mb-4">
@@ -81,19 +80,21 @@
         <Button
           class={`size-button ${
             selectedSize?.code === productSize.code
-              ? 'bg-zinc-300'
-              : 'bg-zinc-50'
-          } text-zinc-800 border border-black hover:bg-zinc-300 focus:bg-zinc-300 active:bg-zinc-300`}
+              ? 'bg-zinc-400'
+              : 'bg-zinc-300'
+          } text-zinc-800 border border-black hover:bg-zinc-400 focus:bg-zinc-400 active:bg-zinc-400`}
+          style="font-family: 'DIN2014', sans-serif;"
           onclick={() => selectSize(productSize.code)}
         >
           {productSize.code}
         </Button>
       {/each}
     </div>
-
-    <Button class="w-full bg-zinc-800 text-white py-2 px-4 rounded mb-2" onclick={handleAddToCart}>
-      ADD TO CART
-    </Button>
+    <div class="container mx-auto p-4" style="font-family: 'DIN2014', sans-serif;">
+      <Button class="w-full bg-zinc-600 text-white py-2 px-4 rounded mb-2" onclick={handleAddToCart}>
+        ADD TO CART
+      </Button>
+    </div>
 
     <ProductDesc />
   {:else}
@@ -101,7 +102,7 @@
   {/if}
 
   <div class="mt-8">
-    <h3 class="text-lg font-semibold mb-2">FREQUENTLY ASKED QUESTIONS:</h3>
+    <h3 class="text-zinc-600 text-lg font-semibold mb-2" style="font-family: 'DIN2014', sans-serif;">FREQUENTLY ASKED QUESTIONS:</h3>
     <Faq />
   </div>
 </div>

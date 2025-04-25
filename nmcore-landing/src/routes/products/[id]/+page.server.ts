@@ -6,17 +6,16 @@ import { error } from '@sveltejs/kit';
 export async function load({ params }: { params: { id: string } }) {
   console.log('Received product ID:', params.id);
 
-  // TODO: reviews are now coming directly from reviewTokens collections i.e. reviewTokens.images, reviewTokens.rating, reviewTokens.review 
   try {
     const { id } = params;
     if (!id) {
-      console.error('No product ID in params');
+      console.error('❌ No product ID in params');
       throw error(400, 'Product ID is missing from the URL');
     }
     const productSnapshot = await adminDb.collection('products').where('id', '==', id).get();
 
     if (productSnapshot.empty) {
-      console.error(`Product not found for ID: ${id}`);
+      console.error(`❌ Product not found for ID: ${id}`);
       throw error(404, `Product not found for ID: ${id}`);
     }
 
