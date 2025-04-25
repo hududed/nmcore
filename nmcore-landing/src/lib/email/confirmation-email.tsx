@@ -4,6 +4,7 @@ import {
   Head,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Text
@@ -32,23 +33,29 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = (props) => {
       <Tailwind>
         <Body className="bg-white my-auto mx-auto font-sans px-2">
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
+            <Img
+              src={`${frontendUrl}/images/nmcore_logo_onblack.png`}
+              alt="NMCore Logo"
+              className="mx-auto mb-4"
+              width="150"
+              height="auto"
+            />
             <Text className="text-black text-[14px] leading-[24px]">
               Thank you {name} for your purchase!
             </Text>
             <Text className="text-black text-[14px] leading-[24px]">
               Your order is being processed. Your order ID is <strong>{orderId}</strong>.
             </Text>
-            <Text className="text-black text-[14px] leading-[24px]">
+            {/* <Text className="text-black text-[14px] leading-[24px]">
               We would love to hear your feedback. Please leave a review by clicking the link below:
             </Text>
-            <Link href={reviewLink} className="text-blue-500 underline">Leave a Review</Link>
+            <Link href={reviewLink} className="text-blue-500 underline">Leave a Review</Link> */}
             <Text className="text-black text-[14px] leading-[24px]">
               For inquiries, reach us at{' '}
-              <Link href="mailto:hud@nmcore.com">hud@nmcore.com</Link>
+              <Link href="mailto:hello@nmcore.com">hello@nmcore.com</Link>
             </Text>
             <Text className="text-black text-[12px] leading-[4px] pt-4">Best,</Text>
             <Text className="text-black text-[12px] leading-[4px] ml-1">Hud</Text>
-            <Text className="text-black text-[12px] leading-[4px] ml-1 italic">NMCore Team</Text>
             <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
           </Container>
         </Body>

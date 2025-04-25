@@ -31,7 +31,7 @@ export const ShippingNotificationEmail: React.FC<ShippingNotificationEmailProps>
             </Text>
             <Text className="text-black text-[14px] leading-[24px]">
               For inquiries, reach us at{' '}
-              <Link href="mailto:hud@nmcore.com">hud@nmcore.com</Link>
+              <Link href="mailto:hello@nmcore.com">hello@nmcore.com</Link>
             </Text>
             <Text className="text-black text-[12px] leading-[4px] pt-4">Best,</Text>
             <Text className="text-black text-[12px] leading-[4px] ml-1">Hud</Text>

@@ -26,7 +26,7 @@ const sendEmailInternal = async (emailType, emailData) => {
 
   const msg = {
     to: emailData.email,
-    from: "Hud Wahab <hud@nmcore.com>",
+    from: "Hud Wahab <hello@nmcore.com>",
     subject: getSubject(emailType),
     html: emailHtml,
   };
