@@ -92,7 +92,8 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
       // Create order doc with denormalized items
-      const orderRef = db.collection('orders').doc(session.id) as DocumentReference<Order>;
+      const orderRef = db.collection('orders').doc(customerInfo.orderId) as DocumentReference<Order>;
+
       const metaItems = sessionWithCustomer.metadata?.items
         ? JSON.parse(sessionWithCustomer.metadata.items)
         : [];
@@ -224,7 +225,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // **ADDED THESE LINES TO CONSTRUCT emailItems:**
-      const orderSnap = await db.collection('orders').doc(session.id).get();
+      const orderSnap = await db.collection('orders').doc(session.metadata!.order_id!).get()
+
       const savedOrder = orderSnap.data() as Order | undefined;
       const emailItems = (savedOrder?.items || []).map(item => ({
         imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/${item.mainImage}`,

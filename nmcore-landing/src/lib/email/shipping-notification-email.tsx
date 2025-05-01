@@ -1,32 +1,30 @@
+// file: src/lib/email/shipping-notification-email.tsx
 import {
   Body,
-  Column,
   Container,
   Head,
-  Hr,
   Html,
   Img,
   Link,
   Preview,
   Section,
-  Text
+  Text,
 } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 import * as React from 'react';
 
-// Types for shipping notification props
-interface OrderItem {
+interface Item {
   imageUrl: string;
-  title: string;
-  size: string;
+  title:    string;
+  size:     string;
 }
 
 interface ShippingNotificationEmailProps {
-  name: string;
-  orderId: string;
-  trackingUrl: string;
+  name:           string;
+  orderId:        string;
+  trackingUrl:    string;
   trackingNumber: string;
-  items: OrderItem[];
+  items:          Item[];
 }
 
 export const ShippingNotificationEmail: React.FC<ShippingNotificationEmailProps> = ({
@@ -34,71 +32,71 @@ export const ShippingNotificationEmail: React.FC<ShippingNotificationEmailProps>
   orderId,
   trackingUrl,
   trackingNumber,
-  items
+  items,
 }) => {
   const frontendUrl = process.env.VITE_FRONTEND_URL || 'https://www.nmcore.com';
-  const fmt = (text: string) => text;
 
   return (
     <Html>
-      <Head />
-      <Preview>Your package is on the way!</Preview>
+      <Head>
+        <Preview>Your package is on the way!</Preview>
+      </Head>
       <Tailwind>
-        <Body className="bg-white my-auto mx-auto font-sans px-4">
-          <Container className="border border-solid border-[#eaeaea] rounded my-8 mx-auto p-6 max-w-[600px]">
-            {/* Logo */}
-            <Img
-              src={`${frontendUrl}/images/nmcore_logo_onblack.png`}
-              alt="NMCore Logo"
-              className="mx-auto mb-4"
-              width="150"
-              height="auto"
-            />
+        <Body className="bg-white my-auto mx-auto font-sans px-4 py-6">
+          <Container className="border border-solid border-[#eaeaea] rounded-lg mx-auto p-6 max-w-[600px]">
+
+            {/* ← REVERTED: single white-logo only */}
+            <div className="text-center mb-8">
+              <Img
+                src={`${frontendUrl}/images/nmcore_logo_onwhite.png`}
+                alt="NMCore Logo"
+                className="mx-auto"
+                width="150"
+                height="auto"
+              />
+            </div>
 
             {/* Header */}
-            <Text className="text-xl font-bold text-black">Order #{orderId}</Text>
-            <Text className="text-[14px] leading-[24px] mt-2">
-              Your order is on the way. Track your shipment to see the delivery status.
+            <Text className="text-2xl font-bold mb-2">Order #{orderId}</Text>
+            <Text className="text-[15px] leading-[24px] mb-6">
+              Your package is on its way! Track its progress below.
             </Text>
 
-            <Hr className="my-4" />
+            {/* Track Button */}
+            <Section className="text-center mb-6">
+              <Link
+                href={trackingUrl}
+                className="inline-block bg-black text-white px-6 py-3 rounded-lg text-sm font-medium"
+              >
+                Track with USPS
+              </Link>
+            </Section>
 
-            {/* Tracking Info */}
-            <Text className="font-semibold text-black">Tracking Number</Text>
-            <Link href={trackingUrl} className="underline text-[14px] leading-[24px]">
-              {trackingNumber}
-            </Link>
-
-            <Hr className="my-4" />
-
-            {/* Items in this shipment */}
-            <Text className="font-semibold text-black mb-2">Items in this shipment</Text>
-            {items.map((item, idx) => (
-              <Section key={idx} className="flex items-center mb-4">
-                <Img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <Column className="ml-4">
-                  <Text className="text-[14px] font-medium text-black">{item.title}</Text>
-                  <Text className="text-[12px] text-gray-600">Size: {item.size}</Text>
-                </Column>
-              </Section>
-            ))}
-
-            <Hr className="my-4" />
+            {/* Items */}
+            <Section className="border-t border-gray-200 pt-6 mb-6">
+              <Text className="text-xl font-semibold mb-4">Items in This Shipment</Text>
+              {items.map((item, i) => (
+                <Section key={i} className="flex items-center mb-4">
+                  <Img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
+                  <div className="ml-4">
+                    <Text className="font-medium">{item.title}</Text>
+                    <Text className="text-sm text-gray-600">Size: {item.size}</Text>
+                  </div>
+                </Section>
+              ))}
+            </Section>
 
             {/* Footer */}
-            <Text className="text-[12px] leading-[16px] text-gray-600">
-              If you have any questions, please contact us at{' '}
-              <Link href="mailto:hello@nmcore.com" className="underline">
-                hello@nmcore.com
-              </Link>.
-            </Text>
-
-            <Text className="text-[12px] leading-[16px] mt-2">Best regards,</Text>
-            <Text className="text-[12px] leading-[16px]">Hud and the NMCore Team</Text>
+            <Section className="border-t border-gray-200 pt-6 text-center">
+              <Text className="text-sm text-gray-600">
+                Need help? <Link href="mailto:hello@nmcore.com" className="underline">Contact us</Link>
+              </Text>
+              <Text className="text-sm mt-2">Cheers, Hud &amp; the NMCore Team</Text>
+            </Section>
           </Container>
         </Body>
       </Tailwind>
