@@ -27,6 +27,21 @@ export type CloudinaryImage = {
   height?: number;
 };
 
+export interface Order {
+  customerRef: string;      // or DocumentReference
+  orderId:     string;
+  timestamp:   Date;
+  shippingAddress: any;     // match your Address type
+  items:       Array<{
+    stripePriceId: string;
+    quantity:      number;
+    title?:        string;
+    price?:        number;
+    mainImage?:    string;
+    size?:         string;   
+  }>;
+}
+
 export type ProductSize = {
   availabilityStatus: string;
   code: string;

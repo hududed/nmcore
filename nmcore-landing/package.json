@@ -8,6 +8,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"seed": "tsx src/seed.ts",
+		"seed:inventory": "tsx src/seed-inventory.ts",
 		"build:all": "cross-env NODE_ENV=$NODE_ENV vite build && cd functions && npm run build:functions && cd ..",
 		"emulate": "cross-env NODE_ENV=development FIRESTORE_EMULATOR_HOST=localhost:8080 npm run build:all && npm run copy:prerendered && firebase emulators:start",
 		"deploy:staging": "cross-env NODE_ENV=staging npm run build:all && npm run copy:prerendered && firebase use nanogrowtech-staging && firebase deploy",

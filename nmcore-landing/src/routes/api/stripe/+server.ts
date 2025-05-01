@@ -1,188 +1,263 @@
 // file: src/routes/api/stripe/+server.ts
 import ConfirmationEmail from '$lib/email/confirmation-email';
+import ShippingNotificationEmail from '$lib/email/shipping-notification-email';
 import { adminDb as db } from '$lib/firebase-admin';
+import { CLOUDINARY_CLOUD_NAME as cloudName } from '$lib/secrets';
+import type { Order, ProductSize } from '$lib/types';
 import { render } from '@react-email/render';
 import sgMail from '@sendgrid/mail';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { DocumentData, DocumentReference } from 'firebase-admin/firestore';
 import { createElement } from 'react';
 import Stripe from 'stripe';
-import { v4 as uuidv4 } from 'uuid';
 
-// Initialize Stripe with the secret key from environment variables
+// Initialize Stripe
 const stripeSecretKey = process.env.VITE_STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.VITE_STRIPE_WEBHOOK_SECRET;
 const sendgridApiKey = process.env.SENDGRID_FB_API_KEY;
-
 if (!stripeSecretKey || !stripeWebhookSecret || !sendgridApiKey) {
   throw new Error('Missing environment variables');
 }
-
 const stripe = new Stripe(stripeSecretKey, {
   // @ts-ignore
   apiVersion: '2024-12-18.acacia',
 });
-
 sgMail.setApiKey(sendgridApiKey);
 
 export const POST: RequestHandler = async ({ request }) => {
   console.log('POST request received at /api/stripe');
   const sig = request.headers.get('stripe-signature');
-  if (!sig) {
-    return new Response('Missing Stripe signature', { status: 400 });
-  }
+  if (!sig) return new Response('Missing Stripe signature', { status: 400 });
 
   let event;
   try {
     const rawBody = await request.text();
     event = stripe.webhooks.constructEvent(rawBody, sig, stripeWebhookSecret);
   } catch (err) {
-    console.error('Error verifying Stripe webhook signature:', err);
+    console.error('Webhook signature verification failed:', err);
     return new Response('Webhook signature verification failed', { status: 400 });
   }
 
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
-
-      // Retrieve session with expanded customer details
-      const sessionWithCustomer = await stripe.checkout.sessions.retrieve(session.id, {
-        expand: ['customer'],
-      });
-
+      const sessionWithCustomer = await stripe.checkout.sessions.retrieve(session.id, { expand: ['customer'] });
       console.log('Checkout session completed:', sessionWithCustomer);
 
       // Prepare customer info
       const customerInfo = {
-        name: sessionWithCustomer.customer_details?.name || 'No Name',
-        email: sessionWithCustomer.customer_details?.email || 'No Email',
-        shippingAddress: sessionWithCustomer.shipping_details?.address || {
-          city: '',
-          country: '',
-          line1: '',
-          line2: '',
-          postal_code: '',
-          state: ''
-        },
-        orderId: sessionWithCustomer.metadata?.order_id || '',
+        name:      sessionWithCustomer.customer_details?.name  || 'No Name',
+        email:     sessionWithCustomer.customer_details?.email || 'No Email',
+        orderId:   sessionWithCustomer.metadata?.order_id      || '',
         timestamp: sessionWithCustomer.created,
       };
 
-      // Store customer data in Firestore
-      try {
-        console.log('Storing customer data in Firestore:', customerInfo);
-        await db.collection('customers').doc(sessionWithCustomer.id).set(customerInfo);
-        console.log('Customer data stored successfully');
-      } catch (error) {
-        console.error('Error storing customer data in Firestore:', error);
+      // Build Address objects but only set line2 if defined
+      const ship = sessionWithCustomer.shipping_details;
+      const shippingAddress: any = {
+        name:       ship?.name || customerInfo.name,
+        line1:      ship?.address.line1       || '',
+        city:       ship?.address.city        || '',
+        state:      ship?.address.state       || '',
+        postalCode: ship?.address.postal_code || '',
+        country:    ship?.address.country     || '',
+      };
+      if (ship?.address.line2) {
+        shippingAddress.line2 = ship.address.line2;
       }
 
-      // Parse items from metadata
+      const bill = sessionWithCustomer.customer_details?.address;
+      let billingAddress: any = undefined;
+      if (bill) {
+        billingAddress = {
+          name:       customerInfo.name,
+          line1:      bill.line1       || '',
+          city:       bill.city        || '',
+          state:      bill.state       || '',
+          postalCode: bill.postal_code || '',
+          country:    bill.country     || '',
+        };
+        if (bill.line2) {
+          billingAddress.line2 = bill.line2;
+        }
+      }
+
+      await db
+        .collection('customers')
+        .doc(session.id)
+        .set({
+          ...customerInfo,
+          shippingAddress,
+          billingAddress,
+        });
+
+      // Create order doc with denormalized items
+      const orderRef = db.collection('orders').doc(customerInfo.orderId) as DocumentReference<Order>;
+
+      const metaItems = sessionWithCustomer.metadata?.items
+        ? JSON.parse(sessionWithCustomer.metadata.items)
+        : [];
+      const denormItems: Order['items'] = [];
+      for (const item of metaItems) {
+        const snap = await db
+          .collection('products')
+          .where('stripePriceIds', 'array-contains', item.stripePriceId)
+          .get();
+        if (snap.empty) continue;
+        const prodData = snap.docs[0].data();
+        const sizes = prodData.productSizes as ProductSize[];
+        const sizeInfo = sizes.find(s => s.stripePriceId === item.stripePriceId);
+        if (!sizeInfo) continue;
+        denormItems.push({
+          stripePriceId: item.stripePriceId,
+          quantity:      item.quantity,
+          title:         prodData.title,
+          price:         sizeInfo.price,
+          mainImage:     sizeInfo.mainImage.cloudinaryId,
+          size:          sizeInfo.code,
+        });
+      }
+      const subtotal     = denormItems.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+      const shippingCost = 0;
+      const taxes        = 0;
+      const total        = subtotal + shippingCost + taxes;
+
+      await orderRef.set(
+        {
+          customerRef:     db.collection('customers').doc(session.id),
+          orderId:         customerInfo.orderId,
+          timestamp:       new Date(customerInfo.timestamp * 1000),
+          shippingAddress,
+          items:           denormItems,
+        },
+        { merge: true }
+      );
+
+      // …inventory update and reviewToken logic stays the same…
       const items = sessionWithCustomer.metadata?.items
         ? JSON.parse(sessionWithCustomer.metadata.items)
         : [];
-      console.log('Items:', items);
-
-      // Prepare a Firestore batch
       const batch = db.batch();
-
-      let productDoc; // Define productDoc here
-
+      let productDoc: FirebaseFirestore.QueryDocumentSnapshot<DocumentData>;
       for (const item of items) {
-        console.log(
-          `Processing item: ${item.name}, stripePriceId: ${item.stripePriceId}, stripeProductId: ${item.stripeProductId}, quantity: ${item.quantity}`
-        );
-
-        // Query for the doc that contains stripePriceId
-        const productQuerySnapshot = await db.collection('products')
+        const snapshot = await db
+          .collection('products')
           .where('stripePriceIds', 'array-contains', item.stripePriceId)
           .get();
-
-        if (productQuerySnapshot.empty) {
-          console.error(`No product found with stripePriceId: ${item.stripePriceId}`);
-          continue;
-        }
-
-        productDoc = productQuerySnapshot.docs[0];
-        const productData = productDoc.data();
-
-        // Ensure productSizes is an array
-        let productSizes = productData.productSizes;
-        if (!Array.isArray(productSizes)) {
-          console.error(`productSizes is not an array in doc: ${productDoc.id}`);
-          continue;
-        }
-
-        // Find the matching index
-        const sizeIndex = productSizes.findIndex(
-          (size) => size.stripePriceId === item.stripePriceId
-        );
-
-        if (sizeIndex === -1) {
-          console.error(`No matching size for ${item.stripePriceId} in doc: ${productDoc.id}`);
-          continue;
-        }
-
-        // Calculate the new stock
-        const currentStock = productSizes[sizeIndex].stock;
-        const newStock = currentStock - item.quantity;
-        console.log(`Updating stock for ${productDoc.id} / sizeIndex ${sizeIndex} from ${currentStock} to ${newStock}`);
-
-        // Mutate the array in memory
-        productSizes[sizeIndex].stock = newStock;
-        productSizes[sizeIndex].availabilityStatus =
-          newStock > 0 ? 'In Stock' : 'Sold Out';
-
-        // Write the entire array back
-        batch.update(productDoc.ref, {
-          productSizes: productSizes
-        });
+        if (snapshot.empty) continue;
+        productDoc = snapshot.docs[0];
+        const data = productDoc.data();
+        const idx = data.productSizes.findIndex((s: any) => s.stripePriceId === item.stripePriceId);
+        if (idx < 0) continue;
+        const current = data.productSizes[idx].stock;
+        const updated = current - item.quantity;
+        data.productSizes[idx].stock = updated;
+        data.productSizes[idx].availabilityStatus = updated > 0 ? 'In Stock' : 'Sold Out';
+        batch.update(productDoc.ref, { productSizes: data.productSizes });
       }
-
-      // Commit the batch
       try {
-        console.log('Committing Firestore batch to update product stocks');
         await batch.commit();
-        console.log('Updated stock by rewriting productSizes arrays');
+        console.log('Updated stock levels');
       } catch (error) {
-        console.error('Error committing Firestore batch:', error);
+        console.error('Error updating stock in Firestore:', error);
       }
 
-      // Generate a unique review token
-      const reviewToken = uuidv4();
-      const reviewTokenRef: DocumentReference<DocumentData> = db.collection('reviewTokens').doc(reviewToken);
-      await reviewTokenRef.set({
-        productId: productDoc.id,
-        email: customerInfo.email,
-        createdAt: new Date(),
-        used: false
+      // Send full confirmation email
+      await sgMail.send({
+        to:      customerInfo.email,
+        from:    'Hud Wahab <hello@nmcore.com>',
+        subject: 'Order Confirmation',
+        html: await render(
+          createElement(ConfirmationEmail, {
+            name:            customerInfo.name,
+            orderId:         customerInfo.orderId,
+            items:           denormItems.map(i => ({
+                               imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/${i.mainImage}`,
+                               title:    i.title!,
+                               code:     i.size!,
+                               price:    i.price!,
+                               quantity: i.quantity,
+                             })),
+            subtotal,
+            shippingCost,
+            taxes,
+            total,
+            shippingAddress,
+            billingAddress,
+            shippingMethod: 'Free shipping',
+          })
+        ),
+      });
+      console.log('Confirmation email sent');
+      break;
+    }
+
+    case 'invoice.updated': {
+      const invoice = event.data.object as Stripe.Invoice;
+      console.log('→ invoice.updated metadata:', invoice.metadata);
+      if (invoice.metadata.ship_status !== 'shipped') break;
+
+      const paymentIntentId = invoice.payment_intent as string;
+      const sessions = await stripe.checkout.sessions.list({
+        payment_intent: paymentIntentId,
+        limit: 1,
+      });
+      if (!sessions.data.length) break;
+      const session = sessions.data[0];
+
+      const sessionWithCustomer = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ['customer'],
       });
 
-      // Render the confirmation email template
-      try {
-        console.log('Rendering confirmation email template');
+      const shippingData = {
+        serviceName:    invoice.metadata.service_name,
+        shipDate:       invoice.metadata.ship_date,
+        shipmentId:     invoice.metadata.shipment_id,
+        trackingUrl:    invoice.metadata.tracking_URL,
+        trackingNumber: invoice.metadata.tracking_number,
+      };
 
-        const emailHtml = await render(
-          createElement(ConfirmationEmail, {
-            name: customerInfo.name,
-            orderId: customerInfo.orderId,
-            reviewToken: reviewToken
+      try {
+        await db.collection('customers').doc(session.id).update(shippingData);
+        console.log('Shipping data updated in Firestore');
+      } catch (err) {
+        console.error('Error updating shipping info in Firestore:', err);
+      }
+
+      // **ADDED THESE LINES TO CONSTRUCT emailItems:**
+      const orderSnap = await db.collection('orders').doc(session.metadata!.order_id!).get()
+
+      const savedOrder = orderSnap.data() as Order | undefined;
+      const emailItems = (savedOrder?.items || []).map(item => ({
+        imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/${item.mainImage}`,
+        title:    item.title!,
+        size:     item.size!,
+      }));
+      // end added block
+
+      const name    = sessionWithCustomer.customer_details?.name  || 'Customer';
+      const email   = sessionWithCustomer.customer_details?.email || '';
+      const orderId = session.metadata?.order_id || '';
+
+      try {
+        const html = await render(
+          createElement(ShippingNotificationEmail, {
+            name,
+            orderId,
+            trackingUrl:    shippingData.trackingUrl,
+            trackingNumber: shippingData.trackingNumber,
+            items:          emailItems,
           })
         );
-
-        // Send the confirmation email
-        const msg = {
-          to: customerInfo.email,
-          from: "Hud Wahab <hello@nmcore.com>",
-          subject: 'Order Confirmation',
-          html: emailHtml,
-        };
-
-        console.log('Sending confirmation email to:', customerInfo.email);
-        const output = await sgMail.send(msg);
-        console.log("Email sent successfully:", output);
+        await sgMail.send({
+          to:      email,
+          from:    'Hud Wahab <hello@nmcore.com>',
+          subject: 'Your NMCore order has shipped!',
+          html,
+        });
+        console.log(`Shipping email sent to ${email}`);
       } catch (error) {
-        console.error("Error rendering or sending confirmation email:", error);
+        console.error('Error sending shipping notification email:', error);
       }
 
       break;

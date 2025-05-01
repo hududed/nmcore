@@ -3,6 +3,11 @@ import { config } from 'dotenv';
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { Firestore, getFirestore } from 'firebase-admin/firestore';
 
+// TODO: Consider separating catalog (static product data) from inventory (dynamic stock levels) into separate Firestore collections for clearer ownership and simpler updates
+
+// Version your catalog seed
+const SEED_VERSION = 1;
+
 // Ensure the correct environment file is loaded
 const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFile });
@@ -24,13 +29,10 @@ if (!getApps().length) {
 
 const db = getFirestore();
 
-// **Configure Firestore to Use Emulator If Running**
+// Configure Firestore Emulator if running
 if (process.env.FIRESTORE_EMULATOR_HOST) {
   const [host, port] = process.env.FIRESTORE_EMULATOR_HOST.split(':');
-  (db as Firestore).settings({
-    host: `${host}:${port}`,
-    ssl: false,
-  });
+  (db as Firestore).settings({ host: `${host}:${port}`, ssl: false });
   console.log(`Seeding Firestore Emulator at ${host}:${port}`);
 }
 
@@ -40,7 +42,7 @@ const products = [
     id: "nm_bloom_household",
     brand: "NMCORE",
     category: "Household",
-    desc: "Boost low-light plant growth and yield with our carbon quantum dot technology, enhancing photosynthesis across UV, VIS, and IR spectrums.",
+    desc: "Boost low-light plant growth and yield with our carbon Quantum Dot technology, enhancing photosynthesis across UV, VIS, and IR spectrums.",
     discountPercentage: 0,
 
     // Top-level images for universal display
@@ -71,10 +73,10 @@ const products = [
         dimensions: { depth: 5, height: 20, width: 10 },
         price: 2799, // in cents
         sku: "BLOOM-REFILL",
-        stock: 50,
+        stock: 79,
         stripePriceId: process.env[`BLOOM_REFILL_STRIPE_PRICE_ID`],
         stripeProductId: process.env[`BLOOM_REFILL_STRIPE_PRODUCT_ID`], 
-        weight: 1.2
+        weight: 436
       },
       {
         code: "Starter Kit",
@@ -83,10 +85,10 @@ const products = [
         dimensions: { depth: 6, height: 24, width: 12 },
         price: 3999, // in cents
         sku: "BLOOM-STARTER",
-        stock: 30,
+        stock: 19,
         stripePriceId: process.env[`BLOOM_STARTER_STRIPE_PRICE_ID`],
         stripeProductId: process.env[`BLOOM_STARTER_STRIPE_PRODUCT_ID`],
-        weight: 1.5
+        weight: 543
       }
     ],
 
@@ -106,37 +108,34 @@ async function seedFirestore() {
   const batch = db.batch();
 
   for (const product of products) {
-    // Extract stripePriceIds for quick lookup
-    const stripePriceIds = product.productSizes.map((size) => size.stripePriceId);
-
-    // Build the document object
-    const productDoc = {
-      ...product,
-      productSizes: [...product.productSizes], // Ensure productSizes remains an array
-      stripePriceIds
-    };
-
-    // Reference Firestore document by ID
+    const stripePriceIds = product.productSizes.map(size => size.stripePriceId);
+    const productDoc = { ...product, productSizes: [...product.productSizes], stripePriceIds };
     const productRef = db.collection('products').doc(product.id);
+    const snapshot = await productRef.get();
 
-    // Check if the product already exists
-    const productSnapshot = await productRef.get();
-    if (productSnapshot.exists) {
-      // If the product exists, update only the fields that should be updated
-      const existingProduct = productSnapshot.data();
-      productDoc.productSizes = productDoc.productSizes.map((size, index) => ({
+    if (snapshot.exists) {
+      const existing = snapshot.data()!;
+      productDoc.productSizes = productDoc.productSizes.map((size, i) => ({
         ...size,
-        stock: existingProduct.productSizes[index].stock // Preserve existing stock
+        stock: existing.productSizes[i]?.stock ?? size.stock,
       }));
     }
 
-    batch.set(productRef, productDoc, { merge: true }); // Merge with existing doc
+     // Merge only static catalog fields
+    batch.set(productRef, productDoc, { mergeFields: [
+      'brand','category','desc','discountPercentage','images','meta',
+      'minimumOrderQuantity','productSizes','stripePriceIds','rating','returnPolicy',
+      'reviews','useCases','shippingInformation','tags','thumbnail','title',
+      'warrantyInformation'
+    ]});
   }
 
-  // Commit the batch
   await batch.commit();
   console.log('Firestore seeding completed with Cloudinary image references.');
+
+  // Record seed version for migrations
+  await db.collection('meta').doc('config').set({ catalogVersion: SEED_VERSION }, { merge: true });
+  console.log(`Recorded seed version ${SEED_VERSION} in Firestore meta/config.`);
 }
 
-// Run the seed script
 seedFirestore().catch(console.error);
