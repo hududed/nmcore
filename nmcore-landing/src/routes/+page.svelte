@@ -25,7 +25,7 @@
   description="Boost low-light plant growth and yield with our carbon quantum dot technology, enhancing photosynthesis across UV, VIS, and IR spectrums."
   keywords="carbon quantum dot technology, photosynthesis, low-light plant growth, nanotechnology, agriculture, crop health, yield improvement"
   url="https://www.nmcore.com/"
-  image="https://www.nmcore.com/images/BLOOM_product_.jpg"
+  image="https://www.nmcore.com/images/BLOOM_meta.jpg"
 />
 
 <StructuredData
