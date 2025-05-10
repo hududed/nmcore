@@ -36,8 +36,9 @@
     "url": "https://www.nmcore.com/",
     "logo": "https://www.nmcore.com/images/nmcore_logo_onwhite.png",
     "sameAs": [
-      // "https://www.facebook.com/yourpage",
-      // "https://www.twitter.com/yourprofile",
+      "https://www.instagram.com/nmcore_/",
+      "https://www.facebook.com/nmcoreLLC"
+      // "https://www.tiktok.com/yourprofile",
       // Add other social profiles if applicable
     ]
   }}
