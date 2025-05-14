@@ -17,6 +17,11 @@ const config = {
       }),
       csrf: {
         checkOrigin: false,
+      },
+      // Ensure routes are not prerendered
+      prerender: {
+        entries: ['*'],
+        handleMissingId: 'ignore'
       }
     }
 };

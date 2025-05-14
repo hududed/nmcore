@@ -24,6 +24,92 @@ const stripe = new Stripe(stripeSecretKey, {
 });
 sgMail.setApiKey(sendgridApiKey);
 
+// Email tracking function to log and send emails with backup capabilities
+async function sendTrackedEmail({
+  to,
+  from = 'Hud Wahab <hello@nmcore.com>',
+  subject,
+  emailComponent,
+  props,
+  orderId,
+  bcc = 'hello@nmcore.com' // Always BCC yourself for backup
+}: {
+  to: string;
+  from?: string;
+  subject: string;
+  emailComponent: any;
+  props: any;
+  orderId: string;
+  bcc?: string;
+}) {
+  // Create unique ID for this email send
+  const emailId = `${orderId}-${Date.now()}`;
+  
+  // Render email HTML
+  const html = await render(createElement(emailComponent, props));
+  
+  // Store email data in Firestore for tracking and possible resend
+  const emailRef = db.collection('email_logs').doc(emailId);
+  await emailRef.set({
+    to,
+    from,
+    subject,
+    bcc,
+    orderId,
+    componentType: emailComponent.name,
+    props: JSON.parse(JSON.stringify(props)), // Ensure serializable
+    html, // Store rendered HTML for easy resend
+    status: 'pending',
+    createdAt: new Date(),
+    attempts: 0
+  });
+  
+  try {
+    // Send via SendGrid
+    await sgMail.send({
+      to,
+      from,
+      subject,
+      html,
+      bcc,
+    });
+    
+    // Update status on success
+    await emailRef.update({
+      status: 'sent',
+      sentAt: new Date(),
+      provider: 'sendgrid',
+      attempts: 1
+    });
+    
+    console.log(`Email sent successfully: ${emailId}`);
+    return true;
+    
+  } catch (error) {
+    // Convert error to string safely regardless of error type
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorDetails = error instanceof Error 
+      ? JSON.stringify({ 
+          message: error.message, 
+          name: error.name, 
+          stack: error.stack 
+        }) 
+      : JSON.stringify(error);
+    
+    // Log failure
+    await emailRef.update({
+      status: 'failed',
+      errorMessage,
+      errorDetails,
+      lastAttemptAt: new Date(),
+      attempts: 1
+    });
+    
+    console.error(`Failed to send email ${emailId}:`, error);
+    return false;
+  }
+}
+
 export const POST: RequestHandler = async ({ request }) => {
   console.log('POST request received at /api/stripe');
   const sig = request.headers.get('stripe-signature');
@@ -162,33 +248,33 @@ export const POST: RequestHandler = async ({ request }) => {
         console.error('Error updating stock in Firestore:', error);
       }
 
-      // Send full confirmation email
-      await sgMail.send({
-        to:      customerInfo.email,
-        from:    'Hud Wahab <hello@nmcore.com>',
+      // Send confirmation email using tracked email function
+      await sendTrackedEmail({
+        to: customerInfo.email,
         subject: 'Order Confirmation',
-        html: await render(
-          createElement(ConfirmationEmail, {
-            name:            customerInfo.name,
-            orderId:         customerInfo.orderId,
-            items:           denormItems.map(i => ({
-                               imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/${i.mainImage}`,
-                               title:    i.title!,
-                               code:     i.size!,
-                               price:    i.price!,
-                               quantity: i.quantity,
-                             })),
-            subtotal,
-            shippingCost,
-            taxes,
-            total,
-            shippingAddress,
-            billingAddress,
-            shippingMethod: 'Free shipping',
-          })
-        ),
+        emailComponent: ConfirmationEmail,
+        props: {
+          name: customerInfo.name,
+          orderId: customerInfo.orderId,
+          items: denormItems.map(i => ({
+            imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/${i.mainImage}`,
+            title: i.title!,
+            code: i.size!,
+            price: i.price!,
+            quantity: i.quantity,
+          })),
+          subtotal,
+          shippingCost,
+          taxes,
+          total,
+          shippingAddress,
+          billingAddress,
+          shippingMethod: 'Free shipping',
+        },
+        orderId: customerInfo.orderId
       });
-      console.log('Confirmation email sent');
+      
+      console.log('Confirmation email logged and sent');
       break;
     }
 
@@ -224,42 +310,34 @@ export const POST: RequestHandler = async ({ request }) => {
         console.error('Error updating shipping info in Firestore:', err);
       }
 
-      // **ADDED THESE LINES TO CONSTRUCT emailItems:**
       const orderSnap = await db.collection('orders').doc(session.metadata!.order_id!).get()
-
       const savedOrder = orderSnap.data() as Order | undefined;
       const emailItems = (savedOrder?.items || []).map(item => ({
         imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/${item.mainImage}`,
         title:    item.title!,
         size:     item.size!,
       }));
-      // end added block
 
       const name    = sessionWithCustomer.customer_details?.name  || 'Customer';
       const email   = sessionWithCustomer.customer_details?.email || '';
       const orderId = session.metadata?.order_id || '';
 
-      try {
-        const html = await render(
-          createElement(ShippingNotificationEmail, {
-            name,
-            orderId,
-            trackingUrl:    shippingData.trackingUrl,
-            trackingNumber: shippingData.trackingNumber,
-            items:          emailItems,
-          })
-        );
-        await sgMail.send({
-          to:      email,
-          from:    'Hud Wahab <hello@nmcore.com>',
-          subject: 'Your NMCore order has shipped!',
-          html,
-        });
-        console.log(`Shipping email sent to ${email}`);
-      } catch (error) {
-        console.error('Error sending shipping notification email:', error);
-      }
-
+      // Send shipping notification using tracked email function
+      await sendTrackedEmail({
+        to: email,
+        subject: 'Your NMCore order has shipped!',
+        emailComponent: ShippingNotificationEmail,
+        props: {
+          name,
+          orderId,
+          trackingUrl: shippingData.trackingUrl,
+          trackingNumber: shippingData.trackingNumber,
+          items: emailItems,
+        },
+        orderId
+      });
+      
+      console.log(`Shipping email logged and sent to ${email}`);
       break;
     }
 

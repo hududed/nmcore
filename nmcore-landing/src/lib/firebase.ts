@@ -1,5 +1,5 @@
-// filepath: /Users/hfox/Developments/nmcore/nmcore-landing/src/lib/firebase.ts
 import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 // Ensure environment variables are loaded
@@ -23,4 +23,8 @@ const firebaseConfig = {
 
 // Initialize Firebase Client SDK
 const app = initializeApp(firebaseConfig);
+
+// Export all needed Firebase services
 export const db = getFirestore(app);
+export const auth = getAuth(app);
+export default app;

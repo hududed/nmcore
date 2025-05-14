@@ -1,5 +1,6 @@
 //filepath: /nmcore-landing/src/lib/firebase-admin.ts
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
 // Load service account key from environment variable
@@ -19,3 +20,4 @@ if (!getApps().length) {
 }
 
 export const adminDb = getFirestore();
+export const adminAuth = getAuth();
